@@ -1,27 +1,34 @@
-# Workspace
+# Orbitra AI
 
-## Overview
-
-pnpm workspace monorepo using TypeScript. Each package manages its own dependencies.
+A multi-agent AI career copilot for students and early-career engineers — sleek mission-control UI with an animated robot mascot.
 
 ## Stack
+- **Frontend** (`artifacts/orbitra`): React + Vite + Tailwind v4 + framer-motion + wouter, Clerk auth (managed)
+- **Backend** (`artifacts/api-server`): Express 5 + Drizzle ORM + Clerk middleware + Replit OpenAI integration
+- **DB**: PostgreSQL (Replit-managed) via Drizzle
+- **AI**: OpenAI `gpt-5.4` via `@workspace/integrations-openai-ai-server`
 
-- **Monorepo tool**: pnpm workspaces
-- **Node.js version**: 24
-- **Package manager**: pnpm
-- **TypeScript version**: 5.9
-- **API framework**: Express 5
-- **Database**: PostgreSQL + Drizzle ORM
-- **Validation**: Zod (`zod/v4`), `drizzle-zod`
-- **API codegen**: Orval (from OpenAPI spec)
-- **Build**: esbuild (CJS bundle)
+## Agents (`artifacts/api-server/src/lib/agents.ts`)
+1. **Opportunity Radar** — discovers hackathons/internships/events with match score
+2. **Skill Gap Analyzer** — identifies missing skills + 14-day roadmap
+3. **Application Generator** — writes tailored applications with strengths + resume tips
+4. **Recovery** — finds alternatives for missed opportunities
+5. **AI Interviewer** — multi-turn chat interview with per-answer feedback
+6. **Manager / Self-Correction** — embodied in the dashboard orchestration & evaluator JSON in agents
 
-## Key Commands
+## Routes (api)
+- `GET/PUT /api/profile`
+- `GET /api/dashboard/summary` · `GET /api/dashboard/activity`
+- `GET/POST /api/opportunities` · `GET /api/opportunities/:id`
+- `GET/POST /api/skillgap`
+- `GET/POST /api/applications`
+- `POST /api/recovery`
+- `GET/POST /api/interviews` · `GET /api/interviews/:id` · `POST /api/interviews/:id/answer`
 
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- `pnpm --filter @workspace/api-server run dev` — run API server locally
+## Frontend pages
+`/` landing (animated robot), `/sign-in`, `/sign-up`, `/dashboard`, `/profile`,
+`/opportunities`, `/opportunities/:id`, `/skill-gap`, `/applications`,
+`/interview`, `/interview/:id`.
 
-See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details.
+## Free-tier deferred
+Payments (Stripe), email, admin dashboard, mobile app — out of scope on free tier.

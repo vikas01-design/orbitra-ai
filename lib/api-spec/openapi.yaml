@@ -1,36 +1,462 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Orbitra AI API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
-    description: Health operations
+  - name: profile
+  - name: opportunities
+  - name: skillgap
+  - name: applications
+  - name: recovery
+  - name: interviews
+  - name: dashboard
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
           content:
             application/json:
+              schema: { $ref: "#/components/schemas/HealthStatus" }
+
+  /profile:
+    get:
+      operationId: getProfile
+      tags: [profile]
+      responses:
+        "200":
+          description: Profile
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Profile" }
+    put:
+      operationId: updateProfile
+      tags: [profile]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UpdateProfileBody" }
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Profile" }
+
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      responses:
+        "200":
+          description: Summary
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DashboardSummary" }
+
+  /dashboard/activity:
+    get:
+      operationId: getRecentActivity
+      tags: [dashboard]
+      responses:
+        "200":
+          description: Activity feed
+          content:
+            application/json:
               schema:
-                $ref: "#/components/schemas/HealthStatus"
+                type: array
+                items: { $ref: "#/components/schemas/ActivityItem" }
+
+  /opportunities:
+    get:
+      operationId: listOpportunities
+      tags: [opportunities]
+      responses:
+        "200":
+          description: List
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Opportunity" }
+    post:
+      operationId: runOpportunityRadar
+      tags: [opportunities]
+      summary: Run the Opportunity Radar agent to discover new opportunities
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RunRadarBody" }
+      responses:
+        "200":
+          description: Discovered opportunities
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Opportunity" }
+
+  /opportunities/{id}:
+    get:
+      operationId: getOpportunity
+      tags: [opportunities]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Opportunity
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Opportunity" }
+
+  /skillgap:
+    get:
+      operationId: listSkillGaps
+      tags: [skillgap]
+      responses:
+        "200":
+          description: List
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/SkillGap" }
+    post:
+      operationId: runSkillGap
+      tags: [skillgap]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RunSkillGapBody" }
+      responses:
+        "200":
+          description: Skill gap analysis
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SkillGap" }
+
+  /applications:
+    get:
+      operationId: listApplications
+      tags: [applications]
+      responses:
+        "200":
+          description: List
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Application" }
+    post:
+      operationId: generateApplication
+      tags: [applications]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/GenerateApplicationBody" }
+      responses:
+        "200":
+          description: Generated application
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Application" }
+
+  /recovery:
+    post:
+      operationId: runRecovery
+      tags: [recovery]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RunRecoveryBody" }
+      responses:
+        "200":
+          description: Alternative opportunities
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/RecoveryAlternative" }
+
+  /interviews:
+    get:
+      operationId: listInterviews
+      tags: [interviews]
+      responses:
+        "200":
+          description: List
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/InterviewSession" }
+    post:
+      operationId: startInterview
+      tags: [interviews]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/StartInterviewBody" }
+      responses:
+        "200":
+          description: Started session
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/InterviewSession" }
+
+  /interviews/{id}:
+    get:
+      operationId: getInterview
+      tags: [interviews]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Session
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/InterviewSession" }
+
+  /interviews/{id}/answer:
+    post:
+      operationId: answerInterview
+      tags: [interviews]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AnswerInterviewBody" }
+      responses:
+        "200":
+          description: Updated session
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/InterviewSession" }
+
 components:
   schemas:
     HealthStatus:
       type: object
       properties:
-        status:
-          type: string
-      required:
-        - status
+        status: { type: string }
+      required: [status]
 
+    Profile:
+      type: object
+      properties:
+        id: { type: integer }
+        userId: { type: string }
+        name: { type: string }
+        email: { type: string }
+        targetRole: { type: ["string", "null"] }
+        skills:
+          type: array
+          items: { type: string }
+        interests:
+          type: array
+          items: { type: string }
+        createdAt: { type: string }
+      required: [id, userId, name, email, skills, interests, createdAt]
+
+    UpdateProfileBody:
+      type: object
+      properties:
+        name: { type: string }
+        targetRole: { type: ["string", "null"] }
+        skills:
+          type: array
+          items: { type: string }
+        interests:
+          type: array
+          items: { type: string }
+      required: [name, skills, interests]
+
+    Opportunity:
+      type: object
+      properties:
+        id: { type: integer }
+        userId: { type: string }
+        name: { type: string }
+        type: { type: string, description: "Hackathon | Internship | Event" }
+        matchScore: { type: integer }
+        whyMatch: { type: string }
+        deadline: { type: ["string", "null"] }
+        link: { type: ["string", "null"] }
+        status: { type: string, description: "open | applied | missed" }
+        createdAt: { type: string }
+      required: [id, userId, name, type, matchScore, whyMatch, status, createdAt]
+
+    RunRadarBody:
+      type: object
+      properties:
+        focus: { type: ["string", "null"], description: "Optional focus or keyword" }
+
+    SkillGap:
+      type: object
+      properties:
+        id: { type: integer }
+        userId: { type: string }
+        targetRole: { type: string }
+        requiredSkills:
+          type: array
+          items: { type: string }
+        missingSkills:
+          type: array
+          items: { type: string }
+        roadmap:
+          type: array
+          items: { $ref: "#/components/schemas/RoadmapStep" }
+        createdAt: { type: string }
+      required: [id, userId, targetRole, requiredSkills, missingSkills, roadmap, createdAt]
+
+    RoadmapStep:
+      type: object
+      properties:
+        day: { type: string }
+        title: { type: string }
+        details: { type: string }
+      required: [day, title, details]
+
+    RunSkillGapBody:
+      type: object
+      properties:
+        targetRole: { type: string }
+      required: [targetRole]
+
+    Application:
+      type: object
+      properties:
+        id: { type: integer }
+        userId: { type: string }
+        opportunityId: { type: ["integer", "null"] }
+        opportunityName: { type: string }
+        tone: { type: string }
+        message: { type: string }
+        strengths:
+          type: array
+          items: { type: string }
+        resumeSuggestions:
+          type: array
+          items: { type: string }
+        createdAt: { type: string }
+      required: [id, userId, opportunityName, tone, message, strengths, resumeSuggestions, createdAt]
+
+    GenerateApplicationBody:
+      type: object
+      properties:
+        opportunityId: { type: ["integer", "null"] }
+        opportunityName: { type: string }
+        jobDescription: { type: string }
+        tone: { type: string, description: "formal | confident | startup" }
+      required: [opportunityName, jobDescription, tone]
+
+    RunRecoveryBody:
+      type: object
+      properties:
+        missedOpportunity: { type: string }
+      required: [missedOpportunity]
+
+    RecoveryAlternative:
+      type: object
+      properties:
+        name: { type: string }
+        type: { type: string }
+        similarityReason: { type: string }
+        actionSuggestion: { type: string }
+        deadline: { type: ["string", "null"] }
+      required: [name, type, similarityReason, actionSuggestion]
+
+    InterviewSession:
+      type: object
+      properties:
+        id: { type: integer }
+        userId: { type: string }
+        role: { type: string }
+        difficulty: { type: string }
+        status: { type: string, description: "active | completed" }
+        turns:
+          type: array
+          items: { $ref: "#/components/schemas/InterviewTurn" }
+        createdAt: { type: string }
+      required: [id, userId, role, difficulty, status, turns, createdAt]
+
+    InterviewTurn:
+      type: object
+      properties:
+        question: { type: string }
+        answer: { type: ["string", "null"] }
+        feedback: { type: ["string", "null"] }
+        strengths: { type: ["string", "null"] }
+        weaknesses: { type: ["string", "null"] }
+      required: [question]
+
+    StartInterviewBody:
+      type: object
+      properties:
+        role: { type: string }
+        difficulty: { type: string, description: "easy | medium | hard" }
+      required: [role, difficulty]
+
+    AnswerInterviewBody:
+      type: object
+      properties:
+        answer: { type: string }
+      required: [answer]
+
+    DashboardSummary:
+      type: object
+      properties:
+        totalOpportunities: { type: integer }
+        openOpportunities: { type: integer }
+        appliedCount: { type: integer }
+        missedCount: { type: integer }
+        applicationsGenerated: { type: integer }
+        interviewsCompleted: { type: integer }
+        averageMatchScore: { type: integer }
+        topSkillGapRole: { type: ["string", "null"] }
+        missingSkillsCount: { type: integer }
+      required:
+        - totalOpportunities
+        - openOpportunities
+        - appliedCount
+        - missedCount
+        - applicationsGenerated
+        - interviewsCompleted
+        - averageMatchScore
+        - missingSkillsCount
+
+    ActivityItem:
+      type: object
+      properties:
+        id: { type: string }
+        kind: { type: string, description: "opportunity | application | skillgap | interview" }
+        title: { type: string }
+        subtitle: { type: ["string", "null"] }
+        createdAt: { type: string }
+      required: [id, kind, title, createdAt]

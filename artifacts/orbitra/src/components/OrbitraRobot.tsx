@@ -1,0 +1,129 @@
+import { motion, useAnimationFrame, useMotionValue, useTransform } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+
+export default function OrbitraRobot() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  
+  // Parallax subtle tracking
+  const headRotateX = useTransform(mouseY, [-500, 500], [15, -15]);
+  const headRotateY = useTransform(mouseX, [-500, 500], [-25, 25]);
+  
+  const [isBlinking, setIsBlinking] = useState(false);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      mouseX.set(e.clientX - centerX);
+      mouseY.set(e.clientY - centerY);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [mouseX, mouseY]);
+
+  useEffect(() => {
+    const blinkInterval = setInterval(() => {
+      setIsBlinking(true);
+      setTimeout(() => setIsBlinking(false), 150);
+      
+      // Double blink chance
+      if (Math.random() > 0.7) {
+        setTimeout(() => {
+          setIsBlinking(true);
+          setTimeout(() => setIsBlinking(false), 150);
+        }, 250);
+      }
+    }, 4000);
+    return () => clearInterval(blinkInterval);
+  }, []);
+
+  return (
+    <div ref={containerRef} className="relative w-64 h-64 mx-auto perspective-1000">
+      <motion.div
+        animate={{ y: [0, -10, 0] }}
+        transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+        className="w-full h-full relative preserve-3d"
+      >
+        {/* Glow Aura */}
+        <motion.div
+          animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+          className="absolute inset-0 bg-primary/20 blur-3xl rounded-full"
+        />
+
+        {/* Head */}
+        <motion.div
+          style={{ rotateX: headRotateX, rotateY: headRotateY }}
+          className="absolute inset-0 flex items-center justify-center preserve-3d"
+        >
+          <svg viewBox="0 0 200 200" className="w-full h-full drop-shadow-[0_0_15px_rgba(0,255,255,0.5)]">
+            {/* Outer Ring */}
+            <motion.circle
+              cx="100" cy="100" r="80"
+              fill="none" stroke="url(#cyan-glow)" strokeWidth="2"
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+              style={{ transformOrigin: "100px 100px" }}
+              strokeDasharray="10 20 40 20"
+            />
+            
+            {/* Inner Ring */}
+            <motion.circle
+              cx="100" cy="100" r="70"
+              fill="none" stroke="url(#purple-glow)" strokeWidth="4"
+              animate={{ rotate: -360 }}
+              transition={{ repeat: Infinity, duration: 15, ease: "linear" }}
+              style={{ transformOrigin: "100px 100px" }}
+              strokeDasharray="100 50"
+              opacity="0.5"
+            />
+
+            {/* Core Body */}
+            <path
+              d="M 60 70 Q 100 50 140 70 L 130 130 Q 100 150 70 130 Z"
+              fill="rgba(10, 10, 30, 0.8)"
+              stroke="rgba(255, 255, 255, 0.1)"
+              strokeWidth="2"
+            />
+            
+            {/* Eyes */}
+            <g className="eyes" style={{ transform: isBlinking ? 'scaleY(0.1)' : 'scaleY(1)', transformOrigin: 'center' }}>
+              <rect x="80" y="85" width="12" height="6" rx="3" fill="#00FFFF" />
+              <rect x="108" y="85" width="12" height="6" rx="3" fill="#00FFFF" />
+              <circle cx="86" cy="88" r="2" fill="#FFF" />
+              <circle cx="114" cy="88" r="2" fill="#FFF" />
+            </g>
+
+            {/* Scanner Beam */}
+            <motion.path
+              d="M 95 110 L 105 110 L 150 180 L 50 180 Z"
+              fill="url(#scan-beam)"
+              animate={{ opacity: [0.1, 0.4, 0.1] }}
+              transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+            />
+
+            <defs>
+              <linearGradient id="cyan-glow" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#00FFFF" />
+                <stop offset="100%" stopColor="transparent" />
+              </linearGradient>
+              <linearGradient id="purple-glow" x1="0" y1="1" x2="1" y2="0">
+                <stop offset="0%" stopColor="#8A2BE2" />
+                <stop offset="100%" stopColor="transparent" />
+              </linearGradient>
+              <linearGradient id="scan-beam" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#00FFFF" stopOpacity="0.5" />
+                <stop offset="100%" stopColor="#00FFFF" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </motion.div>
+      </motion.div>
+    </div>
+  );
+}
