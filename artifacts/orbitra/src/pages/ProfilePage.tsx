@@ -61,7 +61,7 @@ export default function ProfilePage() {
 
   const handleSave = () => {
     updateProfile.mutate(
-      { data: { name, targetRole, bio, skills, interests } },
+      { data: { name, targetRole, skills, interests } },
       {
         onSuccess: () => {
           toast.success("Profile updated", { description: "Your agent crew has been notified of the changes." });

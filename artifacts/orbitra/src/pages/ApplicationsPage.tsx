@@ -143,7 +143,7 @@ export default function ApplicationsPage() {
                         <Briefcase className="w-5 h-5 text-violet-400" />
                       </div>
                       <div>
-                        <h3 className="font-display font-bold text-lg">{app.opportunityId ? `Opportunity #${app.opportunityId}` : "Manual Entry"}</h3>
+                        <h3 className="font-display font-bold text-lg">{app.opportunityName}</h3>
                         <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
                           <span className="uppercase tracking-widest text-violet-400/70">{app.tone}</span>
                           <span>•</span>
@@ -192,7 +192,7 @@ export default function ApplicationsPage() {
                                 <Zap className="w-4 h-4" /> Highlighted Strengths
                               </h4>
                               <ul className="space-y-2">
-                                {app.strengthsHighlighted.map((s: string, i: number) => (
+                                {(app.strengths ?? []).map((s: string, i: number) => (
                                   <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
                                     <span className="text-emerald-500 mt-0.5">•</span> {s}
                                   </li>
@@ -206,7 +206,7 @@ export default function ApplicationsPage() {
                                 <FileText className="w-4 h-4" /> Resume Tweaks
                               </h4>
                               <ul className="space-y-2">
-                                {app.resumeTweaks.map((t: string, i: number) => (
+                                {(app.resumeSuggestions ?? []).map((t: string, i: number) => (
                                   <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
                                     <span className="text-cyan-500 mt-0.5">•</span> {t}
                                   </li>

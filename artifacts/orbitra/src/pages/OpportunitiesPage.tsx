@@ -19,11 +19,11 @@ export default function OpportunitiesPage() {
   
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [focusKeyword, setFocusKeyword] = useState("");
-  const [filter, setFilter] = useState<"all" | "new" | "applied" | "rejected" | "interviewing">("all");
+  const [filter, setFilter] = useState<"all" | "open" | "applied" | "missed">("all");
 
   const handleRunRadar = () => {
     runRadar.mutate(
-      { data: { focusKeyword: focusKeyword || undefined } },
+      { data: { focus: focusKeyword || undefined } },
       {
         onSuccess: (newOpps) => {
           queryClient.invalidateQueries({ queryKey: getListOpportunitiesQueryKey() });
@@ -85,10 +85,9 @@ export default function OpportunitiesPage() {
 
       <div className="flex flex-wrap gap-2 pb-4 border-b border-white/5">
         <Button variant={filter === "all" ? "secondary" : "ghost"} size="sm" onClick={() => setFilter("all")} className="rounded-full">All</Button>
-        <Button variant={filter === "new" ? "secondary" : "ghost"} size="sm" onClick={() => setFilter("new")} className="rounded-full">New</Button>
+        <Button variant={filter === "open" ? "secondary" : "ghost"} size="sm" onClick={() => setFilter("open")} className="rounded-full">Open</Button>
         <Button variant={filter === "applied" ? "secondary" : "ghost"} size="sm" onClick={() => setFilter("applied")} className="rounded-full">Applied</Button>
-        <Button variant={filter === "interviewing" ? "secondary" : "ghost"} size="sm" onClick={() => setFilter("interviewing")} className="rounded-full">Interviewing</Button>
-        <Button variant={filter === "rejected" ? "secondary" : "ghost"} size="sm" onClick={() => setFilter("rejected")} className="rounded-full">Rejected</Button>
+        <Button variant={filter === "missed" ? "secondary" : "ghost"} size="sm" onClick={() => setFilter("missed")} className="rounded-full">Missed</Button>
       </div>
 
       {isLoading ? (
@@ -131,9 +130,9 @@ export default function OpportunitiesPage() {
                   <div className="glass-card p-6 rounded-2xl border-white/5 hover:border-cyan-400/50 hover:shadow-[0_0_30px_rgba(0,255,255,0.1)] transition-all cursor-pointer h-full flex flex-col group">
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <h3 className="font-bold text-xl mb-1 group-hover:text-cyan-400 transition-colors">{opp.title}</h3>
+                        <h3 className="font-bold text-xl mb-1 group-hover:text-cyan-400 transition-colors">{opp.name}</h3>
                         <p className="text-muted-foreground flex items-center gap-2">
-                          <Briefcase className="w-4 h-4" /> {opp.company}
+                          <Briefcase className="w-4 h-4" /> {opp.type}{opp.deadline ? ` · ${opp.deadline}` : ""}
                         </p>
                       </div>
                       <Badge variant="outline" className="bg-background/50 backdrop-blur-sm border-white/10 uppercase tracking-wider text-xs">

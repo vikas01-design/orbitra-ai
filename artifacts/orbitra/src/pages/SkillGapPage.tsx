@@ -150,12 +150,9 @@ export default function SkillGapPage() {
                                 className="relative pl-6"
                               >
                                 <div className="absolute -left-[35px] top-1 w-4 h-4 rounded-full bg-blue-500 border-4 border-background" />
+                                <div className="text-xs font-mono text-blue-300 mb-1">{step.day}</div>
                                 <h5 className="font-bold text-blue-100 mb-1">{step.title}</h5>
-                                <p className="text-sm text-muted-foreground mb-3">{step.description}</p>
-                                <div className="flex flex-wrap gap-4 text-xs font-mono text-blue-300">
-                                  <span>Time: {step.estimatedTime}</span>
-                                  <span>Resources: {step.resources.join(", ")}</span>
-                                </div>
+                                <p className="text-sm text-muted-foreground">{step.details}</p>
                               </motion.div>
                             ))}
                           </div>

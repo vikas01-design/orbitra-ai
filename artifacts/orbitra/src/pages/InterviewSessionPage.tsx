@@ -23,7 +23,7 @@ export default function InterviewSessionPage() {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [session?.turns.length]);
+  }, [session?.turns?.length]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,13 +103,13 @@ export default function InterviewSessionPage() {
               </div>
 
               {/* User Answer */}
-              {turn.userAnswer && (
+              {turn.answer && (
                 <div className="flex gap-4 flex-row-reverse">
                   <div className="w-8 h-8 rounded-full bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center shrink-0 mt-1">
                     <User className="w-4 h-4 text-cyan-400" />
                   </div>
                   <div className="bg-cyan-900/40 border border-cyan-500/20 p-4 rounded-2xl rounded-tr-none max-w-[85%] text-sm md:text-base leading-relaxed text-cyan-50">
-                    {turn.userAnswer}
+                    {turn.answer}
                   </div>
                 </div>
               )}

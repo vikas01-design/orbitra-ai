@@ -25,10 +25,19 @@ export default function OpportunityDetailPage() {
   const [recoveryAlternatives, setRecoveryAlternatives] = useState<any[] | null>(null);
 
   const handleGenerateApp = () => {
+    if (!opp) return;
     generateApp.mutate(
-      { data: { opportunityId: oppId, tone } },
+      {
+        data: {
+          opportunityId: oppId,
+          opportunityName: opp.name,
+          jobDescription: `${opp.name} (${opp.type}). Why this matches: ${opp.whyMatch}`,
+          tone,
+        },
+      },
       {
         onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: getListOpportunitiesQueryKey() });
           toast.success("Application generated", { description: "Check the Applications tab to view it." });
           setIsAppDialogOpen(false);
         },
@@ -40,8 +49,9 @@ export default function OpportunityDetailPage() {
   };
 
   const handleRunRecovery = () => {
+    if (!opp) return;
     runRecovery.mutate(
-      { data: { opportunityId: oppId } },
+      { data: { missedOpportunity: opp.name } },
       {
         onSuccess: (data) => {
           setRecoveryAlternatives(data);
@@ -83,16 +93,15 @@ export default function OpportunityDetailPage() {
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
           <div className="space-y-4 flex-1">
             <div className="flex items-center gap-3 flex-wrap">
-              <Badge variant="outline" className={`uppercase tracking-wider font-mono ${opp.status === 'rejected' ? 'text-destructive border-destructive/30 bg-destructive/10' : 'text-cyan-400 border-cyan-400/30 bg-cyan-400/10'}`}>
+              <Badge variant="outline" className={`uppercase tracking-wider font-mono ${opp.status === 'missed' ? 'text-destructive border-destructive/30 bg-destructive/10' : 'text-cyan-400 border-cyan-400/30 bg-cyan-400/10'}`}>
                 {opp.status}
               </Badge>
               <Badge variant="secondary" className="bg-white/5">{opp.type}</Badge>
             </div>
-            <h1 className="text-4xl md:text-5xl font-display font-bold leading-tight">{opp.title}</h1>
+            <h1 className="text-4xl md:text-5xl font-display font-bold leading-tight">{opp.name}</h1>
             <div className="flex flex-wrap gap-4 text-muted-foreground text-sm font-medium">
-              <span className="flex items-center gap-1.5"><Building2 className="w-4 h-4" /> {opp.company}</span>
-              <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" /> {opp.location}</span>
-              <span className="flex items-center gap-1.5"><DollarSign className="w-4 h-4" /> {opp.salary || "Undisclosed"}</span>
+              {opp.deadline && <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4" /> Deadline: {opp.deadline}</span>}
+              {opp.link && <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4" /><a href={opp.link} target="_blank" rel="noreferrer" className="text-cyan-400 hover:underline">Open link</a></span>}
             </div>
           </div>
           
@@ -145,7 +154,7 @@ export default function OpportunityDetailPage() {
           </DialogContent>
         </Dialog>
 
-        {opp.status === 'rejected' && (
+        {opp.status === 'missed' && (
           <Button 
             size="lg" 
             variant="outline" 
@@ -171,14 +180,6 @@ export default function OpportunityDetailPage() {
             </div>
           </div>
 
-          <div className="space-y-4">
-            <h3 className="text-xl font-display font-bold flex items-center gap-2">
-              <FileText className="w-5 h-5" /> Job Description
-            </h3>
-            <div className="glass-card p-6 rounded-2xl border-white/5 whitespace-pre-wrap text-muted-foreground font-mono text-sm leading-relaxed max-h-[500px] overflow-y-auto custom-scrollbar">
-              {opp.description}
-            </div>
-          </div>
         </div>
 
         <div className="space-y-6">
@@ -189,10 +190,12 @@ export default function OpportunityDetailPage() {
                 <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Date Found</p>
                 <p className="font-medium flex items-center gap-2"><Calendar className="w-4 h-4 opacity-50" /> {new Date(opp.createdAt).toLocaleDateString()}</p>
               </div>
-              <div className="pt-4 border-t border-white/5">
-                <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Source</p>
-                <p className="font-medium">{opp.url ? <a href={opp.url} target="_blank" rel="noreferrer" className="text-cyan-400 hover:underline">External Link</a> : "Manual Entry"}</p>
-              </div>
+              {opp.link && (
+                <div className="pt-4 border-t border-white/5">
+                  <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Source</p>
+                  <p className="font-medium"><a href={opp.link} target="_blank" rel="noreferrer" className="text-cyan-400 hover:underline">External Link</a></p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -210,8 +213,13 @@ export default function OpportunityDetailPage() {
               <div className="space-y-4 relative z-10">
                 {recoveryAlternatives.map((alt, i) => (
                   <div key={i} className="space-y-2">
-                    <p className="font-medium text-sm text-fuchsia-300">{alt.tactic}</p>
-                    <p className="text-xs text-muted-foreground">{alt.explanation}</p>
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="font-medium text-sm text-fuchsia-300">{alt.name}</p>
+                      <Badge variant="secondary" className="bg-white/5 text-[10px] uppercase">{alt.type}</Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{alt.similarityReason}</p>
+                    <p className="text-xs text-fuchsia-200/80"><span className="font-display">Next step:</span> {alt.actionSuggestion}</p>
+                    {alt.deadline && <p className="text-[11px] text-muted-foreground/70">Deadline: {alt.deadline}</p>}
                   </div>
                 ))}
               </div>
