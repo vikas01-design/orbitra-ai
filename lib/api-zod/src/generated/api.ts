@@ -221,6 +221,11 @@ export const ListInterviewsResponseItem = zod.object({
       weaknesses: zod.string().nullish(),
     }),
   ),
+  overallScore: zod
+    .number()
+    .nullish()
+    .describe("1-10 rating, set when completed"),
+  summary: zod.string().nullish(),
   createdAt: zod.string(),
 });
 export const ListInterviewsResponse = zod.array(ListInterviewsResponseItem);
@@ -245,6 +250,11 @@ export const StartInterviewResponse = zod.object({
       weaknesses: zod.string().nullish(),
     }),
   ),
+  overallScore: zod
+    .number()
+    .nullish()
+    .describe("1-10 rating, set when completed"),
+  summary: zod.string().nullish(),
   createdAt: zod.string(),
 });
 
@@ -267,6 +277,11 @@ export const GetInterviewResponse = zod.object({
       weaknesses: zod.string().nullish(),
     }),
   ),
+  overallScore: zod
+    .number()
+    .nullish()
+    .describe("1-10 rating, set when completed"),
+  summary: zod.string().nullish(),
   createdAt: zod.string(),
 });
 
@@ -293,5 +308,10 @@ export const AnswerInterviewResponse = zod.object({
       weaknesses: zod.string().nullish(),
     }),
   ),
+  overallScore: zod
+    .number()
+    .nullish()
+    .describe("1-10 rating, set when completed"),
+  summary: zod.string().nullish(),
   createdAt: zod.string(),
 });

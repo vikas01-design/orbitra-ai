@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { Video, Play, Clock, Target } from "lucide-react";
+import { Video, Play, Clock, Target, Star } from "lucide-react";
 import { toast } from "sonner";
 
 export default function InterviewListPage() {
@@ -134,6 +134,11 @@ export default function InterviewListPage() {
                     <p className="text-xs text-muted-foreground flex items-center gap-1.5">
                       <Clock className="w-3 h-3" /> {new Date(session.createdAt).toLocaleDateString()}
                     </p>
+                    {typeof session.overallScore === "number" && (
+                      <p className="text-xs text-amber-300 flex items-center gap-1.5 mt-2 font-display">
+                        <Star className="w-3 h-3 fill-amber-300" /> Rating {session.overallScore}/10
+                      </p>
+                    )}
                   </div>
 
                   <div className="mt-4 pt-3 border-t border-white/5 text-xs text-fuchsia-400/70 font-display font-bold flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity">

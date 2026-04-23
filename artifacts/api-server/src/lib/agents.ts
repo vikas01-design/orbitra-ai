@@ -196,3 +196,22 @@ Evaluate the candidate's answer. Return STRICT JSON: { "feedback": str (2-4 sent
     weaknesses: out.weaknesses ?? "",
   };
 }
+
+export type InterviewSummaryResult = {
+  overallScore: number;
+  summary: string;
+};
+
+export async function summarizeInterview(input: {
+  role: string;
+  difficulty: string;
+  turns: { question: string; answer?: string | null; feedback?: string | null }[];
+}): Promise<InterviewSummaryResult> {
+  const system = `You are the AI Interviewer inside Orbitra AI.
+Score the candidate on a 1-10 scale based on the full transcript and write a 2-4 sentence wrap-up.
+Return STRICT JSON: { "overallScore": int 1-10, "summary": str }.`;
+  const user = JSON.stringify(input);
+  const out = await chatJSON<InterviewSummaryResult>(system, user);
+  const score = Math.max(1, Math.min(10, Math.round(Number(out?.overallScore ?? 5))));
+  return { overallScore: score, summary: out?.summary ?? "" };
+}

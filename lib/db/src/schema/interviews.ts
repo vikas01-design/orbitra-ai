@@ -1,4 +1,4 @@
-import { pgTable, serial, text, jsonb, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, jsonb, integer, timestamp } from "drizzle-orm/pg-core";
 
 export type InterviewTurnData = {
   question: string;
@@ -15,6 +15,8 @@ export const interviewsTable = pgTable("interviews", {
   difficulty: text("difficulty").notNull(),
   status: text("status").notNull().default("active"),
   turns: jsonb("turns").$type<InterviewTurnData[]>().notNull().default([]),
+  overallScore: integer("overall_score"),
+  summary: text("summary"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 

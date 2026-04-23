@@ -23,10 +23,10 @@ export default function DashboardPage() {
   const { data: activity, isLoading: isActivityLoading } = useGetRecentActivity();
 
   const stats = [
-    { title: "Opportunities Found", value: summary?.opportunitiesFound ?? 0, icon: Target, color: "text-cyan-400", bg: "bg-cyan-400/10" },
+    { title: "Opportunities Found", value: summary?.totalOpportunities ?? 0, icon: Target, color: "text-cyan-400", bg: "bg-cyan-400/10" },
     { title: "Applications Generated", value: summary?.applicationsGenerated ?? 0, icon: FileText, color: "text-violet-400", bg: "bg-violet-400/10" },
-    { title: "Interviews Prepped", value: summary?.interviewsPrepped ?? 0, icon: Video, color: "text-fuchsia-400", bg: "bg-fuchsia-400/10" },
-    { title: "Skill Gaps Analyzed", value: summary?.skillGapsAnalyzed ?? 0, icon: Activity, color: "text-blue-400", bg: "bg-blue-400/10" },
+    { title: "Interviews Completed", value: summary?.interviewsCompleted ?? 0, icon: Video, color: "text-fuchsia-400", bg: "bg-fuchsia-400/10" },
+    { title: "Skill Gaps Tracked", value: summary?.missingSkillsCount ?? 0, icon: Activity, color: "text-blue-400", bg: "bg-blue-400/10" },
   ];
 
   const getActivityIcon = (kind: string) => {
@@ -145,9 +145,9 @@ export default function DashboardPage() {
                     <div className="flex-1 pt-2">
                       <p className="text-sm font-medium">{item.title}</p>
                       <div className="flex items-center justify-between mt-1">
-                        <p className="text-xs text-muted-foreground">{item.description}</p>
+                        <p className="text-xs text-muted-foreground">{item.subtitle ?? ""}</p>
                         <span className="text-xs text-muted-foreground opacity-50 whitespace-nowrap ml-4">
-                          {new Date(item.timestamp).toLocaleDateString()}
+                          {new Date(item.createdAt).toLocaleDateString()}
                         </span>
                       </div>
                     </div>

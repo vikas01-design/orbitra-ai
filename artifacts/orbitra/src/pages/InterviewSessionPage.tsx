@@ -7,30 +7,110 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Send, Bot, User, CheckCircle2, AlertCircle } from "lucide-react";
+import { ArrowLeft, Send, Bot, User, CheckCircle2, AlertCircle, Mic, MicOff, Star, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+
+type SpeechRecognitionLike = {
+  start: () => void;
+  stop: () => void;
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onresult: ((e: any) => void) | null;
+  onerror: ((e: any) => void) | null;
+  onend: (() => void) | null;
+};
+
+function getRecognitionCtor(): { new (): SpeechRecognitionLike } | null {
+  if (typeof window === "undefined") return null;
+  const w = window as any;
+  return w.SpeechRecognition || w.webkitSpeechRecognition || null;
+}
 
 export default function InterviewSessionPage() {
   const { id } = useParams<{ id: string }>();
   const sessionId = parseInt(id || "0", 10);
   const queryClient = useQueryClient();
   const bottomRef = useRef<HTMLDivElement>(null);
-  
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+
   const { data: session, isLoading } = useGetInterview(sessionId);
   const answerInterview = useAnswerInterview();
-  
+
   const [answer, setAnswer] = useState("");
+  const [isListening, setIsListening] = useState(false);
+  const [speechSupported, setSpeechSupported] = useState(false);
+
+  useEffect(() => {
+    setSpeechSupported(!!getRecognitionCtor());
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [session?.turns?.length]);
 
+  useEffect(() => {
+    return () => {
+      try { recognitionRef.current?.stop(); } catch {}
+    };
+  }, []);
+
+  const toggleListening = () => {
+    const Ctor = getRecognitionCtor();
+    if (!Ctor) {
+      toast.error("Speech recognition isn't supported in this browser");
+      return;
+    }
+    if (isListening) {
+      try { recognitionRef.current?.stop(); } catch {}
+      setIsListening(false);
+      return;
+    }
+    const rec = new Ctor();
+    rec.continuous = true;
+    rec.interimResults = true;
+    rec.lang = "en-US";
+    let finalText = "";
+    rec.onresult = (e: any) => {
+      let interim = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const transcript = e.results[i][0].transcript;
+        if (e.results[i].isFinal) finalText += transcript + " ";
+        else interim += transcript;
+      }
+      setAnswer(prev => {
+        const base = prev.replace(/\s*\[…[^\]]*\]\s*$/, "");
+        return (base + " " + finalText + (interim ? ` [… ${interim}]` : "")).trimStart();
+      });
+    };
+    rec.onerror = (e: any) => {
+      toast.error("Mic error", { description: e?.error ?? "Unknown" });
+      setIsListening(false);
+    };
+    rec.onend = () => {
+      setIsListening(false);
+      setAnswer(prev => prev.replace(/\s*\[…[^\]]*\]\s*$/, "").trim());
+    };
+    recognitionRef.current = rec;
+    try {
+      rec.start();
+      setIsListening(true);
+    } catch (err) {
+      toast.error("Could not start microphone");
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!answer.trim()) return;
+    const cleaned = answer.replace(/\s*\[…[^\]]*\]\s*$/, "").trim();
+    if (!cleaned) return;
+    if (isListening) {
+      try { recognitionRef.current?.stop(); } catch {}
+      setIsListening(false);
+    }
 
     answerInterview.mutate(
-      { id: sessionId, data: { answer } },
+      { id: sessionId, data: { answer: cleaned } },
       {
         onSuccess: (updatedSession) => {
           queryClient.setQueryData(getGetInterviewQueryKey(sessionId), updatedSession);
@@ -75,7 +155,7 @@ export default function InterviewSessionPage() {
           </div>
         </div>
         <Badge variant="outline" className={
-          session.status === 'active' 
+          session.status === 'active'
             ? 'text-fuchsia-400 border-fuchsia-400/30 bg-fuchsia-400/10'
             : 'text-emerald-400 border-emerald-400/30 bg-emerald-400/10'
         }>
@@ -86,13 +166,12 @@ export default function InterviewSessionPage() {
       <div className="flex-1 overflow-y-auto pr-2 space-y-6 custom-scrollbar pb-4">
         <AnimatePresence initial={false}>
           {session.turns.map((turn, i) => (
-            <motion.div 
+            <motion.div
               key={i}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
-              {/* Agent Question */}
               <div className="flex gap-4">
                 <div className="w-8 h-8 rounded-full bg-fuchsia-500/20 border border-fuchsia-500/30 flex items-center justify-center shrink-0 mt-1">
                   <Bot className="w-4 h-4 text-fuchsia-400" />
@@ -102,7 +181,6 @@ export default function InterviewSessionPage() {
                 </div>
               </div>
 
-              {/* User Answer */}
               {turn.answer && (
                 <div className="flex gap-4 flex-row-reverse">
                   <div className="w-8 h-8 rounded-full bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center shrink-0 mt-1">
@@ -114,9 +192,8 @@ export default function InterviewSessionPage() {
                 </div>
               )}
 
-              {/* Agent Feedback Bubble */}
               {turn.feedback && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   className="flex gap-4 justify-center"
@@ -129,8 +206,7 @@ export default function InterviewSessionPage() {
               )}
             </motion.div>
           ))}
-          
-          {/* Typing Indicator for pending mutation */}
+
           {answerInterview.isPending && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-4">
               <div className="w-8 h-8 rounded-full bg-fuchsia-500/20 border border-fuchsia-500/30 flex items-center justify-center shrink-0">
@@ -153,8 +229,8 @@ export default function InterviewSessionPage() {
             <Textarea
               value={answer}
               onChange={e => setAnswer(e.target.value)}
-              placeholder="Type your answer..."
-              className="resize-none h-24 pr-16 bg-background/50 border-white/10 focus-visible:ring-fuchsia-400 rounded-2xl"
+              placeholder={isListening ? "Listening… speak your answer" : "Type your answer or tap the mic to speak..."}
+              className="resize-none h-24 pr-28 bg-background/50 border-white/10 focus-visible:ring-fuchsia-400 rounded-2xl"
               onKeyDown={e => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
@@ -162,24 +238,56 @@ export default function InterviewSessionPage() {
                 }
               }}
             />
-            <Button 
-              type="submit" 
-              size="icon" 
-              disabled={answerInterview.isPending || !answer.trim()}
+            <Button
+              type="button"
+              size="icon"
+              onClick={toggleListening}
+              disabled={!speechSupported || answerInterview.isPending}
+              title={speechSupported ? (isListening ? "Stop recording" : "Speak answer") : "Speech not supported in this browser"}
+              className={`absolute right-16 bottom-3 rounded-full h-10 w-10 ${isListening ? "bg-rose-500 hover:bg-rose-600 text-white animate-pulse" : "bg-white/10 hover:bg-white/20 text-white"}`}
+            >
+              {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+            </Button>
+            <Button
+              type="submit"
+              size="icon"
+              disabled={answerInterview.isPending || !answer.replace(/\s*\[…[^\]]*\]\s*$/, "").trim()}
               className="absolute right-3 bottom-3 rounded-full bg-fuchsia-500 hover:bg-fuchsia-600 text-white h-10 w-10"
             >
               <Send className="w-4 h-4 -ml-0.5 mt-0.5" />
             </Button>
           </form>
-          <p className="text-[10px] text-center text-muted-foreground mt-2 font-display">Press Enter to send, Shift+Enter for new line</p>
+          <p className="text-[10px] text-center text-muted-foreground mt-2 font-display">
+            Press Enter to send · Shift+Enter for new line · {speechSupported ? "Mic available" : "Mic unsupported in this browser"}
+          </p>
         </div>
       )}
-      
+
       {session.status === 'completed' && (
-        <div className="shrink-0 pt-4 mt-2 text-center p-4 glass-card rounded-2xl border-white/5">
-          <AlertCircle className="w-6 h-6 text-emerald-400 mx-auto mb-2" />
-          <h3 className="font-display font-bold text-white">Simulation Complete</h3>
-          <p className="text-sm text-muted-foreground">The agent has concluded the interview.</p>
+        <div className="shrink-0 pt-4 mt-2 p-5 glass-card rounded-2xl border-emerald-400/20 bg-emerald-400/5 space-y-3">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-emerald-400" />
+              <h3 className="font-display font-bold text-white">Simulation Complete</h3>
+            </div>
+            {typeof session.overallScore === "number" && (
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-300" />
+                <span className="font-display text-amber-300 text-lg font-bold">{session.overallScore}<span className="text-amber-300/60 text-sm">/10</span></span>
+                <div className="flex">
+                  {Array.from({ length: 10 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-3 h-3 ${i < (session.overallScore ?? 0) ? "text-amber-300 fill-amber-300" : "text-white/15"}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          {session.summary && (
+            <p className="text-sm text-muted-foreground leading-relaxed">{session.summary}</p>
+          )}
         </div>
       )}
     </div>

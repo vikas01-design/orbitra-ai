@@ -15,5 +15,12 @@ export interface InterviewSession {
   /** active | completed */
   status: string;
   turns: InterviewTurn[];
+  /**
+   * 1-10 rating, set when completed
+   * @nullable
+   */
+  overallScore?: number | null;
+  /** @nullable */
+  summary?: string | null;
   createdAt: string;
 }

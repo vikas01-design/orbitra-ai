@@ -9,7 +9,7 @@ import {
   GetInterviewParams,
 } from "@workspace/api-zod";
 import { requireAuth } from "../lib/auth";
-import { generateInterviewQuestion, evaluateInterviewAnswer } from "../lib/agents";
+import { generateInterviewQuestion, evaluateInterviewAnswer, summarizeInterview } from "../lib/agents";
 
 const router: IRouter = Router();
 
@@ -21,6 +21,8 @@ function serialize(row: typeof interviewsTable.$inferSelect) {
     difficulty: row.difficulty,
     status: row.status,
     turns: row.turns ?? [],
+    overallScore: row.overallScore,
+    summary: row.summary,
     createdAt: row.createdAt.toISOString(),
   };
 }
@@ -100,8 +102,17 @@ router.post("/interviews/:id/answer", requireAuth, async (req, res) => {
     weaknesses: evaluation.weaknesses,
   };
   let status = session.status;
+  let overallScore: number | null = session.overallScore ?? null;
+  let summary: string | null = session.summary ?? null;
   if (turns.length >= 5) {
     status = "completed";
+    const final = await summarizeInterview({
+      role: session.role,
+      difficulty: session.difficulty,
+      turns,
+    });
+    overallScore = final.overallScore;
+    summary = final.summary;
   } else {
     const next = await generateInterviewQuestion({
       role: session.role,
@@ -112,7 +123,7 @@ router.post("/interviews/:id/answer", requireAuth, async (req, res) => {
   }
   const [updated] = await db
     .update(interviewsTable)
-    .set({ turns, status })
+    .set({ turns, status, overallScore, summary })
     .where(eq(interviewsTable.id, id))
     .returning();
   res.json(serialize(updated));

@@ -403,6 +403,8 @@ components:
         turns:
           type: array
           items: { $ref: "#/components/schemas/InterviewTurn" }
+        overallScore: { type: ["integer", "null"], description: "1-10 rating, set when completed" }
+        summary: { type: ["string", "null"] }
         createdAt: { type: string }
       required: [id, userId, role, difficulty, status, turns, createdAt]
 
