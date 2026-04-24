@@ -1,5 +1,6 @@
-import { useGetProfile, useUpdateProfile } from "@workspace/api-client-react";
+import { useGetProfile, useUpdateProfile, getGetProfileQueryKey, getGetDashboardSummaryQueryKey, getGetRecentActivityQueryKey } from "@workspace/api-client-react";
 import { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +13,7 @@ import { AVATARS, getAvatarUrl } from "@/lib/avatars";
 
 export default function ProfilePage() {
   const { data: profile, isLoading } = useGetProfile();
+  const queryClient = useQueryClient();
   const updateProfile = useUpdateProfile();
 
   const [name, setName] = useState("");
@@ -52,11 +54,25 @@ export default function ProfilePage() {
   const handleRemoveInterest = (i: string) => setInterests(interests.filter((x) => x !== i));
 
   const handleSave = () => {
+    if (!name.trim()) {
+      toast.error("Please enter your name before saving.");
+      return;
+    }
     updateProfile.mutate(
-      { data: { name, targetRole, avatarId, skills, interests } },
+      { data: { name: name.trim(), targetRole: targetRole.trim() || null, avatarId, skills, interests } },
       {
-        onSuccess: () => toast.success("Profile updated", { description: "Your agent crew has been notified of the changes." }),
-        onError: () => toast.error("Failed to update profile"),
+        onSuccess: async () => {
+          await Promise.all([
+            queryClient.invalidateQueries({ queryKey: getGetProfileQueryKey() }),
+            queryClient.invalidateQueries({ queryKey: getGetDashboardSummaryQueryKey() }),
+            queryClient.invalidateQueries({ queryKey: getGetRecentActivityQueryKey() }),
+          ]);
+          toast.success("Profile updated", { description: "Your agent crew has been notified of the changes." });
+        },
+        onError: (err: unknown) => {
+          const message = err instanceof Error ? err.message : "Failed to update profile";
+          toast.error(message);
+        },
       }
     );
   };

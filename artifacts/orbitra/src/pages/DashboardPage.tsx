@@ -1,10 +1,11 @@
-import { useGetDashboardSummary, useGetRecentActivity } from "@workspace/api-client-react";
+import { useGetDashboardSummary, useGetRecentActivity, useGetProfile } from "@workspace/api-client-react";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { useEffect } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Target, Activity, FileText, Video, ArrowRight, Bot, Clock } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getAvatarUrl } from "@/lib/avatars";
 
 function AnimatedNumber({ value }: { value: number }) {
   const count = useMotionValue(0);
@@ -21,6 +22,9 @@ function AnimatedNumber({ value }: { value: number }) {
 export default function DashboardPage() {
   const { data: summary, isLoading: isSummaryLoading } = useGetDashboardSummary();
   const { data: activity, isLoading: isActivityLoading } = useGetRecentActivity();
+  const { data: profile } = useGetProfile();
+  const displayName = profile?.name?.trim() || profile?.email?.split("@")[0] || "Explorer";
+  const avatarUrl = getAvatarUrl(profile?.avatarId, displayName);
 
   const stats = [
     { title: "Opportunities Found", value: summary?.totalOpportunities ?? 0, icon: Target, color: "text-cyan-400", bg: "bg-cyan-400/10" },
@@ -41,10 +45,19 @@ export default function DashboardPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
-      <div className="flex justify-between items-end">
-        <div>
-          <h1 className="text-3xl font-display font-bold tracking-tight">Mission Control</h1>
-          <p className="text-muted-foreground mt-1">Your AI career agents are standing by.</p>
+      <div className="flex flex-wrap justify-between items-end gap-4">
+        <div className="flex items-center gap-4">
+          <img
+            src={avatarUrl}
+            alt={displayName}
+            className="w-14 h-14 rounded-full border-2 border-primary/40 bg-background/50 shadow-[0_0_20px_rgba(34,211,238,0.25)]"
+          />
+          <div>
+            <h1 className="text-3xl font-display font-bold tracking-tight">
+              Welcome back, <span className="text-primary">{displayName}</span>
+            </h1>
+            <p className="text-muted-foreground mt-1">Your AI career agents are standing by.</p>
+          </div>
         </div>
       </div>
 
