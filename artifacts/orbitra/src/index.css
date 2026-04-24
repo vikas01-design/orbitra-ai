@@ -200,6 +200,31 @@
   }
   .cl-formButtonPrimary:hover { background-color: #67e8f9 !important; }
   .cl-internal-b3fm6y, .cl-footer { background: transparent !important; }
+
+  .cl-userButtonPopoverCard,
+  .cl-userButtonPopoverMain,
+  .cl-userButtonPopoverFooter {
+    background-color: rgba(11, 11, 34, 0.98) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+  .cl-userPreviewMainIdentifier,
+  .cl-userButtonPopoverActionButtonText,
+  .cl-userButtonPopoverActionButton__manageAccount,
+  .cl-userButtonPopoverActionButton__signOut {
+    color: #ffffff !important;
+  }
+  .cl-userPreviewSecondaryIdentifier {
+    color: #cbd5f5 !important;
+  }
+  .cl-userButtonPopoverActionButton {
+    color: #ffffff !important;
+  }
+  .cl-userButtonPopoverActionButton:hover {
+    background-color: rgba(255, 255, 255, 0.06) !important;
+  }
+  .cl-userButtonPopoverActionButtonIcon {
+    color: #67e8f9 !important;
+  }
 }
 
 @layer utilities {
