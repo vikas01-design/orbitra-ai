@@ -24,10 +24,6 @@ export default function OrbitraRobot() {
   const leftEyeX = useTransform(smoothX, [-600, 600], [78, 82]);
   const rightEyeX = useTransform(smoothX, [-600, 600], [106, 110]);
 
-  // Cursor light spotlight on the head
-  const lightCx = useTransform(smoothX, [-600, 600], [60, 140]);
-  const lightCy = useTransform(smoothY, [-600, 600], [70, 130]);
-
   const [isBlinking, setIsBlinking] = useState(false);
 
   useEffect(() => {
@@ -109,15 +105,6 @@ export default function OrbitraRobot() {
               strokeWidth="2"
             />
             
-            {/* Cursor-following spotlight */}
-            <motion.circle
-              cx={lightCx}
-              cy={lightCy}
-              r="35"
-              fill="url(#cursor-light)"
-              opacity="0.45"
-            />
-
             {/* Eyes */}
             <g className="eyes" style={{ transform: isBlinking ? 'scaleY(0.1)' : 'scaleY(1)', transformOrigin: 'center' }}>
               <motion.rect x={leftEyeX} y="85" width="12" height="6" rx="3" fill="#00FFFF" />
@@ -147,11 +134,6 @@ export default function OrbitraRobot() {
                 <stop offset="0%" stopColor="#00FFFF" stopOpacity="0.5" />
                 <stop offset="100%" stopColor="#00FFFF" stopOpacity="0" />
               </linearGradient>
-              <radialGradient id="cursor-light" cx="0.5" cy="0.5" r="0.5">
-                <stop offset="0%" stopColor="#67e8f9" stopOpacity="0.9" />
-                <stop offset="60%" stopColor="#22d3ee" stopOpacity="0.25" />
-                <stop offset="100%" stopColor="#22d3ee" stopOpacity="0" />
-              </radialGradient>
             </defs>
           </svg>
         </motion.div>
