@@ -225,6 +225,80 @@
   .cl-userButtonPopoverActionButtonIcon {
     color: #67e8f9 !important;
   }
+
+  .cl-modalContent,
+  .cl-modalBackdrop {
+    background-color: rgba(5, 5, 20, 0.85) !important;
+  }
+  .cl-userProfile-root,
+  .cl-userProfile-modal,
+  .cl-profilePage,
+  .cl-navbar,
+  .cl-pageScrollBox,
+  .cl-page {
+    background-color: rgba(11, 11, 34, 0.98) !important;
+    color: #ffffff !important;
+  }
+  .cl-navbarButton,
+  .cl-navbarButtonText,
+  .cl-navbarButtonIcon,
+  .cl-profileSectionTitleText,
+  .cl-profileSectionTitle,
+  .cl-profileSectionContent,
+  .cl-profileSectionPrimaryButton,
+  .cl-accordionTriggerButton,
+  .cl-menuButton,
+  .cl-menuList,
+  .cl-menuItem,
+  .cl-fileDropAreaHint,
+  .cl-fileDropAreaButtonPrimary,
+  .cl-formFieldRow,
+  .cl-badge,
+  .cl-profileSectionItem {
+    color: #ffffff !important;
+  }
+  .cl-navbarButton[data-active="true"],
+  .cl-navbarButton__active {
+    background-color: rgba(34, 211, 238, 0.12) !important;
+    color: #67e8f9 !important;
+  }
+  .cl-navbarButton:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+  }
+  .cl-profileSectionTitleText,
+  .cl-headerTitle {
+    color: #ffffff !important;
+  }
+  .cl-headerSubtitle,
+  .cl-fileDropAreaHint,
+  .cl-profileSectionItem__email,
+  .cl-profileSectionItem__connectedAccounts {
+    color: #cbd5f5 !important;
+  }
+  .cl-accordionTriggerButton:hover,
+  .cl-menuItem:hover,
+  .cl-profileSectionItem:hover {
+    background-color: rgba(255, 255, 255, 0.04) !important;
+  }
+  .cl-badge {
+    background-color: rgba(34, 211, 238, 0.15) !important;
+    color: #67e8f9 !important;
+    border: 1px solid rgba(34, 211, 238, 0.3) !important;
+  }
+  .cl-avatarBox,
+  .cl-avatarImage {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+  }
+  .cl-fileDropAreaBox {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    border: 1px dashed rgba(255, 255, 255, 0.15) !important;
+  }
+  .cl-formButtonReset:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+  }
+  .cl-modalCloseButton {
+    color: #ffffff !important;
+  }
 }
 
 @layer utilities {
