@@ -20,6 +20,7 @@ export const GetProfileResponse = zod.object({
   name: zod.string(),
   email: zod.string(),
   targetRole: zod.string().nullish(),
+  avatarId: zod.string().nullish(),
   skills: zod.array(zod.string()),
   interests: zod.array(zod.string()),
   createdAt: zod.string(),
@@ -28,6 +29,7 @@ export const GetProfileResponse = zod.object({
 export const UpdateProfileBody = zod.object({
   name: zod.string(),
   targetRole: zod.string().nullish(),
+  avatarId: zod.string().nullish(),
   skills: zod.array(zod.string()),
   interests: zod.array(zod.string()),
 });
@@ -38,6 +40,7 @@ export const UpdateProfileResponse = zod.object({
   name: zod.string(),
   email: zod.string(),
   targetRole: zod.string().nullish(),
+  avatarId: zod.string().nullish(),
   skills: zod.array(zod.string()),
   interests: zod.array(zod.string()),
   createdAt: zod.string(),

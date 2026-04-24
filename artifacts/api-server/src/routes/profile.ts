@@ -14,6 +14,7 @@ function serialize(row: typeof profilesTable.$inferSelect) {
     name: row.name,
     email: row.email,
     targetRole: row.targetRole,
+    avatarId: row.avatarId,
     skills: row.skills ?? [],
     interests: row.interests ?? [],
     createdAt: row.createdAt.toISOString(),
@@ -46,6 +47,7 @@ router.put("/profile", requireAuth, async (req, res) => {
     .set({
       name: body.name,
       targetRole: body.targetRole ?? null,
+      avatarId: body.avatarId ?? null,
       skills: body.skills,
       interests: body.interests,
     })

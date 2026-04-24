@@ -6,6 +6,7 @@ export const profilesTable = pgTable("profiles", {
   name: text("name").notNull(),
   email: text("email").notNull(),
   targetRole: text("target_role"),
+  avatarId: text("avatar_id"),
   skills: jsonb("skills").$type<string[]>().notNull().default([]),
   interests: jsonb("interests").$type<string[]>().notNull().default([]),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),

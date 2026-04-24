@@ -13,6 +13,8 @@ export interface Profile {
   email: string;
   /** @nullable */
   targetRole?: string | null;
+  /** @nullable */
+  avatarId?: string | null;
   skills: string[];
   interests: string[];
   createdAt: string;

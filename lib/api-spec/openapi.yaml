@@ -275,6 +275,7 @@ components:
         name: { type: string }
         email: { type: string }
         targetRole: { type: ["string", "null"] }
+        avatarId: { type: ["string", "null"] }
         skills:
           type: array
           items: { type: string }
@@ -289,6 +290,7 @@ components:
       properties:
         name: { type: string }
         targetRole: { type: ["string", "null"] }
+        avatarId: { type: ["string", "null"] }
         skills:
           type: array
           items: { type: string }

@@ -10,6 +10,8 @@ export interface UpdateProfileBody {
   name: string;
   /** @nullable */
   targetRole?: string | null;
+  /** @nullable */
+  avatarId?: string | null;
   skills: string[];
   interests: string[];
 }
