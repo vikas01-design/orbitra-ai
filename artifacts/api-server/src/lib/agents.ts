@@ -74,7 +74,7 @@ Return STRICT JSON: { "opportunities": [{ "name": str, "type": "Hackathon"|"Inte
 export type SkillGapResult = {
   requiredSkills: string[];
   missingSkills: string[];
-  roadmap: { day: string; title: string; details: string }[];
+  roadmap: { day: string; title: string; details: string; videoQuery: string }[];
 };
 
 export async function runSkillGapAgent(input: {
@@ -82,18 +82,31 @@ export async function runSkillGapAgent(input: {
   targetRole: string;
 }): Promise<SkillGapResult> {
   const system = `You are the Skill Gap Analyzer Agent inside Orbitra AI.
-Given the user's current skills and a target role, identify required skills, missing skills, and produce a practical 14-day learning roadmap (day-by-day or grouped by 2-day blocks).
-Return STRICT JSON: { "requiredSkills": [str], "missingSkills": [str], "roadmap": [{ "day": "Day 1" | "Days 1-2", "title": str, "details": str }] }
-Make the roadmap beginner-friendly with concrete, actionable items (specific resources are okay).`;
+
+FIRST: Validate that the "targetRole" field is a legitimate technical job role, technology, or skill area (e.g. "Backend Engineer", "React Developer", "Machine Learning", "Kubernetes", "Python", "DevOps", "Data Scientist").
+If it is a greeting, casual phrase, question, or any non-technical input (e.g. "how are you", "what is your name", "hello", "tell me a joke"), you MUST return ONLY: { "error": "not_technical" }
+
+If it IS technical, identify required skills, missing skills, and produce a practical 14-day learning roadmap (day-by-day or grouped by 2-day blocks).
+For each roadmap step include a "videoQuery" field: a concise YouTube search string to find a tutorial video for that specific step (e.g. "React hooks tutorial beginner", "Docker containerization guide").
+Return STRICT JSON: { "requiredSkills": [str], "missingSkills": [str], "roadmap": [{ "day": "Day 1" | "Days 1-2", "title": str, "details": str, "videoQuery": str }] }
+Make the roadmap beginner-friendly with concrete, actionable items.`;
   const user = JSON.stringify({
     currentSkills: input.currentSkills,
     targetRole: input.targetRole,
   });
-  const out = await chatJSON<SkillGapResult>(system, user);
+  const out = await chatJSON<SkillGapResult & { error?: string }>(system, user);
+  if (out.error === "not_technical") {
+    throw new Error("not_technical");
+  }
   return {
     requiredSkills: out.requiredSkills ?? [],
     missingSkills: out.missingSkills ?? [],
-    roadmap: out.roadmap ?? [],
+    roadmap: (out.roadmap ?? []).map((step) => ({
+      day: step.day,
+      title: step.title,
+      details: step.details,
+      videoQuery: step.videoQuery ?? step.title,
+    })),
   };
 }
 

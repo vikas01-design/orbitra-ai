@@ -33,10 +33,19 @@ router.post("/skillgap", requireAuth, async (req, res) => {
   const profile = await db.query.profilesTable.findFirst({
     where: eq(profilesTable.userId, req.userId!),
   });
-  const result = await runSkillGapAgent({
-    currentSkills: profile?.skills ?? [],
-    targetRole: body.targetRole,
-  });
+  let result;
+  try {
+    result = await runSkillGapAgent({
+      currentSkills: profile?.skills ?? [],
+      targetRole: body.targetRole,
+    });
+  } catch (err: any) {
+    if (err.message === "not_technical") {
+      res.status(400).json({ error: "Please enter a valid technical role or technology (e.g. Frontend Developer, Python, Machine Learning)." });
+      return;
+    }
+    throw err;
+  }
   const [inserted] = await db
     .insert(skillGapsTable)
     .values({
