@@ -18,8 +18,6 @@ const LANGUAGES = [
   { label: "Portuguese", value: "portuguese" },
   { label: "Japanese", value: "japanese" },
   { label: "Korean", value: "korean" },
-  { label: "Chinese", value: "chinese" },
-  { label: "Arabic", value: "arabic" },
   { label: "Telugu", value: "telugu" },
   { label: "Tamil", value: "tamil" },
 ];
