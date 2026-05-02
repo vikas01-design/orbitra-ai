@@ -24,6 +24,13 @@ const LANGUAGES = [
   { label: "Tamil", value: "tamil" },
 ];
 
+const TELUGU_CHANNELS = [
+  { name: "Vamsi Bhavani", handle: "@VamsiBhavani", url: "https://www.youtube.com/@VamsiBhavani" },
+  { name: "Telugu Web Guru", handle: "@teluguwebguru", url: "https://www.youtube.com/@teluguwebguru" },
+  { name: "Software School", handle: "@software-school", url: "https://www.youtube.com/@software-school" },
+  { name: "Python Life Telugu", handle: "@PythonLifetelugu", url: "https://www.youtube.com/@PythonLifetelugu" },
+];
+
 const TECHNICAL_ROLE_PATTERN = /^[a-zA-Z0-9.#+\-/ ]{2,80}$/;
 const CONVERSATIONAL_PATTERNS = [
   /^(hi|hello|hey|yo|howdy|greetings)\b/i,
@@ -46,6 +53,11 @@ type VideoPickerState = {
   title: string;
 };
 
+type ChannelPickerState = {
+  query: string;
+  title: string;
+};
+
 export default function SkillGapPage() {
   const queryClient = useQueryClient();
   const { data: gaps, isLoading } = useListSkillGaps();
@@ -54,6 +66,7 @@ export default function SkillGapPage() {
   const [targetRole, setTargetRole] = useState("");
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [videoPicker, setVideoPicker] = useState<VideoPickerState | null>(null);
+  const [channelPicker, setChannelPicker] = useState<ChannelPickerState | null>(null);
 
   const handleAnalyze = (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,10 +98,23 @@ export default function SkillGapPage() {
   };
 
   const openYouTube = (query: string, language: string) => {
+    if (language === "telugu") {
+      setVideoPicker(null);
+      setChannelPicker({ query, title: videoPicker?.title ?? query });
+      return;
+    }
     const searchQ = language === "english" ? query : `${query} in ${language}`;
     const url = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQ)}`;
     window.open(url, "_blank", "noopener,noreferrer");
     setVideoPicker(null);
+  };
+
+  const openTeluguChannel = (channel: typeof TELUGU_CHANNELS[0]) => {
+    if (!channelPicker) return;
+    const searchQ = encodeURIComponent(channelPicker.query);
+    const url = `${channel.url}/search?query=${searchQ}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+    setChannelPicker(null);
   };
 
   return (
@@ -160,6 +186,57 @@ export default function SkillGapPage() {
                     className="text-left px-4 py-2.5 rounded-xl text-sm font-medium bg-white/5 hover:bg-blue-500/20 hover:text-blue-300 border border-white/5 hover:border-blue-500/30 transition-all"
                   >
                     {lang.label}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Telugu Channel Picker Modal */}
+      <AnimatePresence>
+        {channelPicker && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+            onClick={() => setChannelPicker(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="glass-card border border-white/10 rounded-2xl p-6 w-full max-w-sm mx-4 shadow-[0_0_40px_rgba(234,179,8,0.15)]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Youtube className="w-5 h-5 text-red-400" />
+                  <h3 className="font-display font-bold text-lg">Choose a Telugu Channel</h3>
+                </div>
+                <button onClick={() => setChannelPicker(null)} className="text-muted-foreground hover:text-white transition-colors">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
+                Select a channel to search for: <span className="text-yellow-300 font-medium">"{channelPicker.title}"</span>
+              </p>
+              <div className="flex flex-col gap-2">
+                {TELUGU_CHANNELS.map((channel) => (
+                  <button
+                    key={channel.handle}
+                    onClick={() => openTeluguChannel(channel)}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium bg-white/5 hover:bg-red-500/15 hover:text-red-300 border border-white/5 hover:border-red-500/30 transition-all text-left"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
+                      <Youtube className="w-4 h-4 text-red-400" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-white/90">{channel.name}</div>
+                      <div className="text-xs text-muted-foreground">{channel.handle}</div>
+                    </div>
                   </button>
                 ))}
               </div>
