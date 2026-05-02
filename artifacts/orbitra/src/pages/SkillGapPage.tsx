@@ -20,6 +20,8 @@ const LANGUAGES = [
   { label: "Korean", value: "korean" },
   { label: "Chinese", value: "chinese" },
   { label: "Arabic", value: "arabic" },
+  { label: "Telugu", value: "telugu" },
+  { label: "Tamil", value: "tamil" },
 ];
 
 const TECHNICAL_ROLE_PATTERN = /^[a-zA-Z0-9.#+\-/ ]{2,80}$/;
