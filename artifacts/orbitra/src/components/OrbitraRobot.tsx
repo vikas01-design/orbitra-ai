@@ -109,19 +109,6 @@ export default function OrbitraRobot({ isLaunching = false, onLaunchComplete }: 
         className="w-full h-full relative"
         style={{ transformStyle: "preserve-3d" }}
       >
-        {/* Glow Aura */}
-        <motion.div
-          animate={isLaunching
-            ? { scale: 3, opacity: 0, transition: { duration: 0.7 } }
-            : { scale: [1, 1.12, 1], opacity: [0.3, 0.55, 0.3], transition: { repeat: Infinity, duration: 3, ease: "easeInOut" } }
-          }
-          className="absolute inset-0 rounded-full"
-          style={{
-            background: "radial-gradient(circle, rgba(34,211,238,0.25) 0%, rgba(139,92,246,0.1) 60%, transparent 80%)",
-            filter: "blur(20px)",
-          }}
-        />
-
         {/* Head with 3D tilt */}
         <motion.div
           style={{ rotateX: headRotateX, rotateY: headRotateY, transformStyle: "preserve-3d" }}
