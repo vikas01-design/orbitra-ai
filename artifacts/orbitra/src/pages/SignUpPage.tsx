@@ -2,35 +2,35 @@ import { SignUp } from "@clerk/react";
 
 const clerkAppearance = {
   variables: {
-    colorBackground: "#0b0b22",
-    colorText: "#ffffff",
-    colorTextSecondary: "#cbd5f5",
-    colorTextOnPrimaryBackground: "#0b0b22",
-    colorPrimary: "#a855f7",
-    colorInputBackground: "#15153a",
-    colorInputText: "#ffffff",
-    colorNeutral: "#ffffff",
-    colorDanger: "#ff4d6d",
+    colorBackground: "#ffffff",
+    colorText: "#1e293b",
+    colorTextSecondary: "#64748b",
+    colorTextOnPrimaryBackground: "#ffffff",
+    colorPrimary: "#7c3aed",
+    colorInputBackground: "#f8fafc",
+    colorInputText: "#1e293b",
+    colorNeutral: "#64748b",
+    colorDanger: "#e11d48",
     fontFamily: "'Space Grotesk', sans-serif",
     borderRadius: "12px",
   },
   elements: {
-    card: "bg-[#0b0b22]/90 border border-white/10 shadow-[0_0_40px_rgba(168,85,247,0.18)]",
-    headerTitle: "text-white",
-    headerSubtitle: "text-slate-300",
-    socialButtonsBlockButton: "bg-white/5 border border-white/10 text-white hover:bg-white/10",
-    socialButtonsBlockButtonText: "text-white",
-    dividerLine: "bg-white/10",
+    card: "bg-white border border-slate-200 shadow-[0_8px_40px_rgba(150,165,210,0.25)]",
+    headerTitle: "text-slate-800",
+    headerSubtitle: "text-slate-500",
+    socialButtonsBlockButton: "bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100",
+    socialButtonsBlockButtonText: "text-slate-700",
+    dividerLine: "bg-slate-200",
     dividerText: "text-slate-400",
-    formFieldLabel: "text-white",
-    formFieldInput: "bg-[#15153a] border border-white/10 text-white",
+    formFieldLabel: "text-slate-700",
+    formFieldInput: "bg-slate-50 border border-slate-200 text-slate-800",
     formButtonPrimary: "bg-violet-500 text-white hover:bg-violet-400",
-    footerActionText: "text-slate-300",
-    footerActionLink: "text-cyan-300 hover:text-cyan-200",
-    identityPreviewText: "text-white",
-    identityPreviewEditButton: "text-cyan-300",
-    formFieldInputShowPasswordButton: "text-slate-300",
-    otpCodeFieldInput: "bg-[#15153a] text-white border-white/10",
+    footerActionText: "text-slate-500",
+    footerActionLink: "text-cyan-600 hover:text-cyan-700",
+    identityPreviewText: "text-slate-700",
+    identityPreviewEditButton: "text-cyan-600",
+    formFieldInputShowPasswordButton: "text-slate-400",
+    otpCodeFieldInput: "bg-slate-50 text-slate-800 border-slate-200",
   },
 };
 
@@ -39,7 +39,7 @@ export default function SignUpPage() {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-background p-4">
       <div className="relative">
-        <div className="absolute -inset-4 bg-secondary/20 blur-3xl rounded-full" />
+        <div className="absolute -inset-4 bg-violet-100/60 blur-3xl rounded-full" />
         <SignUp
           routing="path"
           path={`${basePath}/sign-up`}
