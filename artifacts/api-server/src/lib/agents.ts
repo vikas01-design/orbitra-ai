@@ -1,7 +1,7 @@
 import { openai } from "@workspace/integrations-openai-ai-server";
 import { logger } from "./logger";
 
-const MODEL = "gpt-5.4";
+const MODEL = "gpt-4o";
 
 async function chatJSON<T>(system: string, user: string): Promise<T> {
   const resp = await openai.chat.completions.create({
