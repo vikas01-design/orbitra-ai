@@ -17,10 +17,10 @@ import jsPDF from "jspdf";
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const LEVEL_COLORS: Record<string, string> = {
-  Entry:  "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-  Mid:    "bg-blue-500/10 text-blue-400 border-blue-500/20",
-  Senior: "bg-violet-500/10 text-violet-400 border-violet-500/20",
-  Lead:   "bg-amber-500/10 text-amber-400 border-amber-500/20",
+  Entry:  "bg-emerald-50 text-emerald-700 border-emerald-200",
+  Mid:    "bg-blue-50 text-blue-700 border-blue-200",
+  Senior: "bg-violet-50 text-violet-700 border-violet-200",
+  Lead:   "bg-amber-50 text-amber-700 border-amber-200",
 };
 
 function isAllCaps(line: string) {
@@ -43,27 +43,27 @@ function ResumePreview({ content }: { content: string }) {
         const line = raw.trimEnd();
         if (i === 0 && isFirstLine) {
           isFirstLine = false;
-          return <p key={i} className="text-white font-bold text-xl tracking-wide">{line}</p>;
+          return <p key={i} className="text-slate-800 font-bold text-xl tracking-wide">{line}</p>;
         }
         if (line === "") return <div key={i} className="h-3" />;
         const link = parseLink(line);
         if (link) return (
-          <p key={i} className="text-white/50 text-xs">
+          <p key={i} className="text-slate-400 text-xs">
             {link.label}:{" "}
             <a href={link.url} target="_blank" rel="noopener noreferrer"
-              className="text-cyan-400 hover:text-cyan-300 underline underline-offset-2 break-all">
+              className="text-cyan-600 hover:text-cyan-700 underline underline-offset-2 break-all">
               {link.url}
             </a>
           </p>
         );
         if (isAllCaps(line)) return (
           <div key={i} className="mt-5 mb-1">
-            <p className="text-cyan-400 font-bold text-xs tracking-widest uppercase">{line}</p>
-            <div className="border-b border-cyan-500/25 mt-0.5" />
+            <p className="text-cyan-600 font-bold text-xs tracking-widest uppercase">{line}</p>
+            <div className="border-b border-cyan-300/40 mt-0.5" />
           </div>
         );
         if (line.startsWith("•")) return (
-          <p key={i} className="text-white/65 pl-4 flex gap-2">
+          <p key={i} className="text-slate-600 pl-4 flex gap-2">
             <span className="text-cyan-500 mt-0.5 shrink-0">•</span>
             <span>{line.slice(1).trim()}</span>
           </p>
@@ -71,9 +71,9 @@ function ResumePreview({ content }: { content: string }) {
         if (line.includes("|")) {
           const parts = line.split("|").map(p => p.trim());
           return (
-            <p key={i} className="text-white font-semibold mt-2">
+            <p key={i} className="text-slate-800 font-semibold mt-2">
               {parts.map((p, pi) => (
-                <span key={pi}>{p}{pi < parts.length - 1 && <span className="text-white/25 mx-2">|</span>}</span>
+                <span key={pi}>{p}{pi < parts.length - 1 && <span className="text-slate-300 mx-2">|</span>}</span>
               ))}
             </p>
           );
@@ -81,13 +81,13 @@ function ResumePreview({ content }: { content: string }) {
         if (line.includes(":") && !line.startsWith("•")) {
           const colon = line.indexOf(":");
           return (
-            <p key={i} className="text-white/65">
-              <span className="text-white/45 font-medium">{line.slice(0, colon)}:</span>
+            <p key={i} className="text-slate-600">
+              <span className="text-slate-500 font-medium">{line.slice(0, colon)}:</span>
               {line.slice(colon + 1)}
             </p>
           );
         }
-        return <p key={i} className="text-white/65">{line}</p>;
+        return <p key={i} className="text-slate-600">{line}</p>;
       })}
     </div>
   );
@@ -133,8 +133,8 @@ function UploadZone({ onUpload, isUploading }: { onUpload: (f: File) => void; is
       onClick={() => !isUploading && inputRef.current?.click()}
       className={`relative border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all duration-300
         ${isDragging
-          ? "border-cyan-400/60 bg-cyan-500/8 scale-[1.01] shadow-[0_0_30px_rgba(34,211,238,0.2)]"
-          : "border-white/[0.08] bg-white/[0.015] hover:border-cyan-500/30 hover:bg-white/[0.03]"}
+          ? "border-cyan-400 bg-cyan-50 scale-[1.01] shadow-[0_0_30px_rgba(34,211,238,0.15)]"
+          : "border-slate-200 bg-white/60 hover:border-cyan-300 hover:bg-cyan-50/30"}
         ${isUploading ? "pointer-events-none" : ""}`}
     >
       <input ref={inputRef} type="file" accept=".pdf,.txt" className="hidden"
@@ -142,29 +142,28 @@ function UploadZone({ onUpload, isUploading }: { onUpload: (f: File) => void; is
       <div className="flex flex-col items-center gap-4">
         {isUploading ? (
           <div className="relative">
-            <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-              <Loader2 className="w-8 h-8 text-cyan-400 animate-spin" />
+            <div className="w-16 h-16 rounded-2xl bg-cyan-50 border border-cyan-200 flex items-center justify-center">
+              <Loader2 className="w-8 h-8 text-cyan-500 animate-spin" />
             </div>
-            <div className="absolute inset-0 rounded-2xl bg-cyan-500/10 animate-ping" />
+            <div className="absolute inset-0 rounded-2xl bg-cyan-100/50 animate-ping" />
           </div>
         ) : (
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/15 to-violet-500/15
-            flex items-center justify-center border border-white/[0.08]
-            shadow-[inset_2px_2px_6px_rgba(0,0,0,0.3)]">
-            <Upload className="w-7 h-7 text-cyan-400" />
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-50 to-violet-50
+            flex items-center justify-center border border-slate-200 shadow-sm">
+            <Upload className="w-7 h-7 text-cyan-500" />
           </div>
         )}
         <div>
-          <p className="text-white font-semibold text-base">
+          <p className="text-slate-700 font-semibold text-base">
             {isUploading ? "Processing your resume…" : "Drop your resume here"}
           </p>
-          <p className="text-white/30 text-sm mt-1">
+          <p className="text-slate-400 text-sm mt-1">
             {isUploading ? "AI is enhancing and optimizing for ATS" : "PDF or TXT · up to 10 MB"}
           </p>
         </div>
         {!isUploading && (
           <Button variant="outline" size="sm"
-            className="border-white/15 text-white/50 hover:border-cyan-400/50 hover:text-cyan-400 gap-2 text-xs">
+            className="border-slate-200 text-slate-400 hover:border-cyan-300 hover:text-cyan-600 gap-2 text-xs">
             <FileText className="w-3.5 h-3.5" /> Browse files
           </Button>
         )}
@@ -207,27 +206,27 @@ function ResumeCard({ resume }: { resume: Resume }) {
 
   return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-      className="neu-card overflow-hidden hover:border-white/10 transition-all duration-300">
+      className="neu-card overflow-hidden hover:border-slate-300 transition-all duration-300">
 
       {/* Header */}
-      <div className="flex items-center gap-3 px-5 py-4 cursor-pointer hover:bg-white/[0.02] transition-colors"
+      <div className="flex items-center gap-3 px-5 py-4 cursor-pointer hover:bg-slate-50 transition-colors"
         onClick={() => setExpanded(!expanded)}>
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500/15 to-violet-500/15
-          flex items-center justify-center shrink-0 border border-white/[0.07]">
-          <FileText className="w-4 h-4 text-cyan-400" />
+        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-50 to-violet-50
+          flex items-center justify-center shrink-0 border border-slate-200">
+          <FileText className="w-4 h-4 text-cyan-600" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-white font-semibold text-sm truncate">{resume.fileName}</p>
-          <p className="text-white/30 text-xs">
+          <p className="text-slate-800 font-semibold text-sm truncate">{resume.fileName}</p>
+          <p className="text-slate-400 text-xs">
             {new Date(resume.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
           </p>
         </div>
         {resume.editedResume && (
-          <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 text-[10px] shrink-0 gap-1">
+          <Badge variant="outline" className="border-emerald-200 text-emerald-700 bg-emerald-50 text-[10px] shrink-0 gap-1">
             <CheckCircle2 className="w-3 h-3" /> Edited
           </Badge>
         )}
-        <div className="text-white/30 shrink-0">
+        <div className="text-slate-300 shrink-0">
           {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </div>
       </div>
@@ -237,23 +236,23 @@ function ResumeCard({ resume }: { resume: Resume }) {
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }}
             className="overflow-hidden">
-            <div className="px-5 pb-6 border-t border-white/[0.05]">
+            <div className="px-5 pb-6 border-t border-slate-100">
 
               {/* Actions */}
               <div className="flex flex-wrap gap-2 mt-4 mb-4">
                 {!editing ? (
                   <>
                     <Button size="sm" variant="outline" onClick={startEdit}
-                      className="border-white/[0.1] text-white/50 hover:border-cyan-400/40 hover:text-cyan-400 gap-1.5 text-xs h-8">
+                      className="border-slate-200 text-slate-500 hover:border-cyan-300 hover:text-cyan-600 gap-1.5 text-xs h-8">
                       <Edit3 className="w-3.5 h-3.5" /> Edit
                     </Button>
                     <Button size="sm" variant="outline" onClick={() => downloadPDF(displayContent, resume.fileName)}
-                      className="border-white/[0.1] text-white/50 hover:border-violet-400/40 hover:text-violet-400 gap-1.5 text-xs h-8">
+                      className="border-slate-200 text-slate-500 hover:border-violet-300 hover:text-violet-600 gap-1.5 text-xs h-8">
                       <Download className="w-3.5 h-3.5" /> PDF
                     </Button>
                     <Button size="sm" onClick={findJobs} disabled={matchJobs.isPending}
                       className="bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-400 hover:to-violet-500
-                        text-white gap-1.5 text-xs h-8 border-0 shadow-[0_0_16px_rgba(34,211,238,0.25)]">
+                        text-white gap-1.5 text-xs h-8 border-0 shadow-[0_4px_12px_rgba(34,211,238,0.2)]">
                       {matchJobs.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Briefcase className="w-3.5 h-3.5" />}
                       {matchJobs.isPending ? "Matching…" : "Find Job Paths"}
                     </Button>
@@ -266,7 +265,7 @@ function ResumeCard({ resume }: { resume: Resume }) {
                       Save
                     </Button>
                     <Button size="sm" variant="outline" onClick={() => setEditing(false)}
-                      className="border-white/[0.1] text-white/40 gap-1.5 text-xs h-8">
+                      className="border-slate-200 text-slate-400 gap-1.5 text-xs h-8">
                       <X className="w-3.5 h-3.5" /> Cancel
                     </Button>
                   </>
@@ -276,12 +275,12 @@ function ResumeCard({ resume }: { resume: Resume }) {
               {/* Content */}
               {editing ? (
                 <textarea
-                  className="w-full bg-black/40 border border-white/[0.08] rounded-xl p-4 text-white/70
-                    font-mono text-sm resize-none focus:outline-none focus:border-cyan-500/40 transition-colors"
+                  className="w-full bg-white border border-slate-200 rounded-xl p-4 text-slate-700
+                    font-mono text-sm resize-none focus:outline-none focus:border-cyan-400 transition-colors"
                   rows={28} value={draft} onChange={e => setDraft(e.target.value)}
                 />
               ) : (
-                <div className="neu-inset p-5">
+                <div className="neu-inset p-5 bg-white/80">
                   <ResumePreview content={displayContent} />
                 </div>
               )}
@@ -291,33 +290,33 @@ function ResumeCard({ resume }: { resume: Resume }) {
                 {showJobs && resume.jobMatches && resume.jobMatches.length > 0 && (
                   <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                     className="mt-6 space-y-3">
-                    <p className="text-white font-semibold text-sm flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-cyan-400" /> Recommended Job Paths
+                    <p className="text-slate-700 font-semibold text-sm flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-cyan-500" /> Recommended Job Paths
                     </p>
                     <div className="grid sm:grid-cols-2 gap-3">
                       {resume.jobMatches.map((job, ji) => (
                         <motion.div key={ji}
                           initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: ji * 0.06 }}
-                          className="neu-card-sm p-4 flex flex-col gap-2 hover:border-white/10 transition-all">
+                          className="neu-card p-4 flex flex-col gap-2 hover:border-slate-300 transition-all">
                           <div className="flex items-start justify-between gap-2">
-                            <p className="text-white font-semibold text-sm leading-tight">{job.title}</p>
+                            <p className="text-slate-800 font-semibold text-sm leading-tight">{job.title}</p>
                             <Badge variant="outline" className={`text-[10px] shrink-0 border ${LEVEL_COLORS[job.level] ?? LEVEL_COLORS.Mid}`}>
                               {job.level}
                             </Badge>
                           </div>
-                          <p className="text-white/35 text-xs">{job.companyType}</p>
-                          <p className="text-white/50 text-xs leading-relaxed">{job.matchReason}</p>
+                          <p className="text-slate-400 text-xs">{job.companyType}</p>
+                          <p className="text-slate-500 text-xs leading-relaxed">{job.matchReason}</p>
                           {job.skillsNeeded && job.skillsNeeded.length > 0 && (
                             <div className="flex flex-wrap gap-1">
                               {job.skillsNeeded.map((s, si) => (
-                                <span key={si} className="text-[10px] bg-white/[0.04] border border-white/[0.07] rounded px-2 py-0.5 text-white/40">
+                                <span key={si} className="text-[10px] bg-slate-100 border border-slate-200 rounded px-2 py-0.5 text-slate-500">
                                   {s}
                                 </span>
                               ))}
                             </div>
                           )}
                           <a href={job.link} target="_blank" rel="noopener noreferrer"
-                            className="mt-1 inline-flex items-center gap-1.5 text-xs text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
+                            className="mt-1 inline-flex items-center gap-1.5 text-xs text-cyan-600 hover:text-cyan-700 font-medium transition-colors">
                             <ExternalLink className="w-3 h-3" /> View live jobs on LinkedIn
                           </a>
                         </motion.div>
@@ -326,8 +325,8 @@ function ResumeCard({ resume }: { resume: Resume }) {
                   </motion.div>
                 )}
                 {showJobs && matchJobs.isPending && (
-                  <div className="mt-4 flex items-center gap-2 text-white/30 text-sm">
-                    <Loader2 className="w-4 h-4 animate-spin text-cyan-400" /> Finding best job matches…
+                  <div className="mt-4 flex items-center gap-2 text-slate-400 text-sm">
+                    <Loader2 className="w-4 h-4 animate-spin text-cyan-500" /> Finding best job matches…
                   </div>
                 )}
               </AnimatePresence>
@@ -369,16 +368,16 @@ export default function ApplicationsPage() {
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
         className="neu-card p-5 flex items-center gap-3 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-violet-500/4 to-transparent pointer-events-none" />
-        <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
-          <Sparkles className="w-5 h-5 text-violet-400" />
+        <div className="absolute inset-0 bg-gradient-to-r from-violet-50 to-transparent pointer-events-none" />
+        <div className="w-10 h-10 rounded-xl bg-violet-50 border border-violet-200 flex items-center justify-center">
+          <Sparkles className="w-5 h-5 text-violet-600" />
         </div>
         <div>
-          <h1 className="font-display font-bold text-lg text-white">Resume AI</h1>
-          <p className="text-white/40 text-xs mt-0.5">ATS optimization · job matching · PDF export</p>
+          <h1 className="font-display font-bold text-lg text-slate-800">Resume AI</h1>
+          <p className="text-slate-400 text-xs mt-0.5">ATS optimization · job matching · PDF export</p>
         </div>
         {resumes.length > 0 && (
-          <div className="ml-auto text-xs text-white/25 font-mono">
+          <div className="ml-auto text-xs text-slate-300 font-mono">
             {resumes.length} resume{resumes.length !== 1 ? "s" : ""}
           </div>
         )}
@@ -391,19 +390,19 @@ export default function ApplicationsPage() {
 
       {/* Resume list */}
       {isLoading ? (
-        <div className="flex items-center justify-center py-12 gap-2 text-white/30">
-          <Loader2 className="w-5 h-5 animate-spin text-violet-400" /> Loading resumes…
+        <div className="flex items-center justify-center py-12 gap-2 text-slate-400">
+          <Loader2 className="w-5 h-5 animate-spin text-violet-500" /> Loading resumes…
         </div>
       ) : resumes.length === 0 ? (
         <div className="neu-card p-12 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-violet-500/8 border border-violet-500/15 flex items-center justify-center mx-auto mb-4">
-            <FileText className="w-7 h-7 text-violet-400/40" />
+          <div className="w-14 h-14 rounded-2xl bg-violet-50 border border-violet-200 flex items-center justify-center mx-auto mb-4">
+            <FileText className="w-7 h-7 text-violet-300" />
           </div>
-          <p className="text-white/30 text-sm">No resumes yet — upload one above to get started.</p>
+          <p className="text-slate-400 text-sm">No resumes yet — upload one above to get started.</p>
         </div>
       ) : (
         <div className="space-y-4">
-          <p className="text-[10px] font-bold tracking-[0.18em] text-white/25 uppercase">Your Resumes</p>
+          <p className="text-[10px] font-bold tracking-[0.18em] text-slate-300 uppercase">Your Resumes</p>
           {resumes.map(r => <ResumeCard key={r.id} resume={r} />)}
         </div>
       )}
