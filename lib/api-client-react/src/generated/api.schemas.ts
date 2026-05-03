@@ -97,6 +97,7 @@ export interface ResumeJobMatch {
   matchReason: string;
   skillsNeeded: string[];
   level: string;
+  link: string;
 }
 
 export interface Resume {

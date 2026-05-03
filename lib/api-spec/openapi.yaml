@@ -444,7 +444,8 @@ components:
           type: array
           items: { type: string }
         level: { type: string }
-      required: [title, companyType, matchReason, skillsNeeded, level]
+        link: { type: string }
+      required: [title, companyType, matchReason, skillsNeeded, level, link]
 
     UpdateResumeBody:
       type: object

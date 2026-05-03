@@ -1,0 +1,48 @@
+VIKAS ELLE
+9014896508 | [vikaselle196@gmail.com](mailto:vikaselle196@gmail.com)
+LinkedIn: https://www.linkedin.com/in/yourprofile
+GitHub: https://github.com/yourusername
+
+PROFESSIONAL SUMMARY
+Aspiring AI & Web Developer with hands-on experience in building web applications and automation tools using Python and modern technologies. Developed multiple real-world projects focused on productivity, system optimization, and user experience. Actively exploring AI agents, automation workflows, and scalable problem-solving systems.
+
+PROJECT EXPERIENCE
+
+MyStep – Student Roadmap Planner | 2025
+• Developed a web-based goal tracking platform to help students plan and monitor academic and career progress
+• Designed an intuitive user interface improving usability and user engagement
+• Structured the application with scalable components for future feature integration
+
+Unified App Portal – Centralized Dashboard | 2024
+• Built a centralized platform integrating multiple applications into a single interface
+• Simplified user navigation and improved accessibility across tools
+• Implemented responsive design for seamless cross-device usage
+
+Zodiac Compatibility Calculator | Python
+• Developed a Python-based system to determine zodiac signs and generate compatibility insights
+• Implemented logical conditions and structured outputs for user-friendly results
+
+Password Strength Validator | Python
+• Built a rule-based password validation system to evaluate security strength
+• Provided real-time feedback to enhance user awareness of secure password practices
+
+RF Energy Harvesting System (Radi-Energy)
+• Designed a conceptual system to convert ambient RF signals into usable electrical energy
+• Explored sustainable and innovative energy solutions through practical modeling
+
+TECHNICAL SKILLS
+
+Programming: Python, JavaScript, HTML, CSS
+Technologies: DBMS, Web Development
+Tools: Git, GitHub, Fusion 360
+Core Concepts: Problem Solving, Automation, System Design
+
+EDUCATION
+Bachelor of Technology
+Aurora Deemed to Be University | 2025 – 2029
+
+CERTIFICATIONS
+Technology Partner – NxtWave Institute of Advanced Technologies
+
+LANGUAGES
+English, German

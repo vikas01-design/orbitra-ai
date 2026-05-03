@@ -221,43 +221,42 @@ export type ResumeJobMatch = {
   matchReason: string;
   skillsNeeded: string[];
   level: string;
+  link: string;
 };
 
 export async function runResumeEnhancerAgent(originalText: string): Promise<string> {
   const system = `You are a professional resume writer and ATS optimization expert inside Orbitra AI.
 
-Your task is to enhance the provided resume to be concise, professional, and optimized for Applicant Tracking Systems (ATS).
+Your task is to enhance the provided resume to be concise, professional, and ATS-optimized.
 
-RULES:
-- Keep length between 1-2 pages worth of content.
-- Use clean, professional, text-based markdown format (no graphics, no tables, no HTML).
-- Use bullet points and clear section headings (##).
-- Focus on achievements, not responsibilities.
-- Use strong action verbs (Developed, Led, Improved, Built, Designed, Launched, etc).
-- Prioritize measurable achievements (numbers, percentages, impact).
-- Avoid generic statements.
-- Strictly avoid: photos, personal details like age/marital status/full address, complex formatting, irrelevant info.
+STRICT FORMAT RULES:
+- Do NOT use markdown symbols like #, ##, *, **, or _.
+- Section headings must be ALL CAPS on their own line (e.g. PROFESSIONAL SUMMARY, WORK EXPERIENCE, PROJECT EXPERIENCE, TECHNICAL SKILLS, EDUCATION, CERTIFICATIONS, LANGUAGES).
+- Bullet points use the • character (not - or *).
+- Name goes on the very first line in ALL CAPS.
+- Contact line: Phone | Email (on second line).
+- If LinkedIn or GitHub present, each on its own line: "LinkedIn: URL" and "GitHub: URL".
+- Leave one blank line before each section heading.
+- For project/work entries: "Project or Job Title | Company or context | Year" on one line, then bullets below.
+- For TECHNICAL SKILLS: group as "Category: item1, item2, item3" lines.
+- For EDUCATION: Degree Name on one line, then "University | Year" on next line.
+- Keep length tight — 1 page maximum worth of content.
+- Focus on achievements, strong action verbs, measurable impact.
+- Avoid age, marital status, full address, photos, tables, or HTML.
+- Only include sections that exist in the original resume.
 
-MANDATORY STRUCTURE (in order):
-## [Full Name]
-[Phone] | [Email] | [LinkedIn if present]
+MANDATORY SECTION ORDER (skip if not in original):
+1. NAME (all caps)
+2. Contact info + LinkedIn/GitHub
+3. PROFESSIONAL SUMMARY
+4. WORK EXPERIENCE (if present)
+5. PROJECT EXPERIENCE (if present instead of or alongside work experience)
+6. TECHNICAL SKILLS
+7. EDUCATION
+8. CERTIFICATIONS (if present)
+9. LANGUAGES (if present)
 
-## Professional Summary
-2-3 impactful sentences summarizing value, experience, and specialization.
-
-## Work Experience
-Reverse-chronological. For each role: Job Title | Company | Dates
-- Action Verb + Task/Project + Quantifiable Result
-
-## Skills
-Hard skills and soft skills, comma-separated or grouped.
-
-## Education
-Degree | University | Year
-
-## Projects / Certifications / Volunteer (only if present in original)
-
-OUTPUT: Return ONLY the enhanced resume in clean markdown. No commentary, no preamble, no explanation — just the resume content.`;
+OUTPUT: Return ONLY the enhanced resume text. No commentary, no preamble, no explanation.`;
 
   const resp = await openai.chat.completions.create({
     model: MODEL,
@@ -274,15 +273,23 @@ export async function runResumeJobMatchAgent(enhancedResume: string): Promise<Re
   const system = `You are a career advisor inside Orbitra AI.
 Based on the candidate's resume, identify 5-7 specific job opportunity paths that are a strong match.
 For each path be realistic and specific to the candidate's actual skills and experience level.
-Return STRICT JSON: { "jobs": [{ "title": str, "companyType": str, "matchReason": str (1-2 sentences), "skillsNeeded": [str], "level": "Entry"|"Mid"|"Senior"|"Lead" }] }`;
+For the "link" field, generate a real LinkedIn Jobs search URL for that specific job title using this format:
+  https://www.linkedin.com/jobs/search/?keywords=ENCODED_JOB_TITLE&f_TPR=r604800&f_E=2
+where ENCODED_JOB_TITLE is the URL-encoded job title (spaces → %20). Use the exact title from your "title" field.
+Return STRICT JSON: { "jobs": [{ "title": str, "companyType": str, "matchReason": str (1-2 sentences), "skillsNeeded": [str], "level": "Entry"|"Mid"|"Senior"|"Lead", "link": str }] }`;
   const out = await chatJSON<{ jobs: ResumeJobMatch[] }>(system, `Resume:\n\n${enhancedResume}`);
-  return (out.jobs ?? []).slice(0, 7).map((j) => ({
-    title: String(j.title ?? ""),
-    companyType: String(j.companyType ?? ""),
-    matchReason: String(j.matchReason ?? ""),
-    skillsNeeded: Array.isArray(j.skillsNeeded) ? j.skillsNeeded.map(String) : [],
-    level: String(j.level ?? "Mid"),
-  }));
+  return (out.jobs ?? []).slice(0, 7).map((j) => {
+    const title = String(j.title ?? "");
+    const fallbackLink = `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(title)}&f_TPR=r604800`;
+    return {
+      title,
+      companyType: String(j.companyType ?? ""),
+      matchReason: String(j.matchReason ?? ""),
+      skillsNeeded: Array.isArray(j.skillsNeeded) ? j.skillsNeeded.map(String) : [],
+      level: String(j.level ?? "Mid"),
+      link: String(j.link ?? fallbackLink) || fallbackLink,
+    };
+  });
 }
 
 export async function summarizeInterview(input: {
