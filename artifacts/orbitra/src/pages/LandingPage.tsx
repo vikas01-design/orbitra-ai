@@ -89,35 +89,35 @@ export default function LandingPage() {
         initial={{ y: -24, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.7 }}
         className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between"
         style={{
-          background: "rgba(6,9,18,0.72)",
+          background: "rgba(238,240,251,0.82)",
           backdropFilter: "blur(24px)",
-          borderBottom: "1px solid rgba(255,255,255,0.048)",
-          boxShadow: "0 1px 40px rgba(0,0,0,0.5)",
+          borderBottom: "1px solid rgba(160,180,240,0.25)",
+          boxShadow: "0 1px 24px rgba(140,160,220,0.18)",
         }}
       >
         <div className="flex items-center gap-2.5">
           <img src={`${basePath}/logo.svg`} alt="Logo" className="w-8 h-8 drop-shadow-[0_0_12px_rgba(34,211,238,0.7)]" />
-          <span className="font-display font-bold text-lg tracking-widest">ORBITRA</span>
-          <span className="ml-1 w-1.5 h-1.5 rounded-full bg-cyan-400 animate-blink-dot" />
+          <span className="font-display font-bold text-lg tracking-widest text-slate-800">ORBITRA</span>
+          <span className="ml-1 w-1.5 h-1.5 rounded-full bg-cyan-500 animate-blink-dot" />
         </div>
         <div className="flex items-center gap-3">
           <SignedIn>
             <button onClick={() => handleLaunch("/dashboard")}
               className="px-4 py-2 rounded-xl text-sm font-display font-semibold tracking-wider
-                text-white/70 hover:text-cyan-400 transition-colors">
+                text-slate-600 hover:text-cyan-600 transition-colors">
               Dashboard →
             </button>
           </SignedIn>
           <SignedOut>
             <Link href="/sign-in">
-              <button className="px-4 py-2 rounded-xl text-sm text-white/50 hover:text-white transition-colors font-medium">
+              <button className="px-4 py-2 rounded-xl text-sm text-slate-500 hover:text-slate-800 transition-colors font-medium">
                 Log In
               </button>
             </Link>
             <Link href="/sign-up">
-              <button className="px-5 py-2.5 rounded-xl text-sm font-display font-semibold tracking-wider text-black
-                bg-gradient-to-r from-cyan-400 to-cyan-500 hover:from-cyan-300 hover:to-cyan-400
-                shadow-[0_0_20px_rgba(34,211,238,0.4)] hover:shadow-[0_0_32px_rgba(34,211,238,0.55)]
+              <button className="px-5 py-2.5 rounded-xl text-sm font-display font-semibold tracking-wider text-white
+                bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500
+                shadow-[0_4px_20px_rgba(6,182,212,0.38)] hover:shadow-[0_4px_28px_rgba(6,182,212,0.5)]
                 transition-all duration-300">
                 Get Started
               </button>
@@ -170,9 +170,9 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
             className="mb-6 inline-flex items-center gap-2 px-4 py-1.5 rounded-full
-              border border-cyan-500/22 bg-cyan-500/7 text-cyan-400 text-xs font-semibold tracking-[0.18em] uppercase"
+              border border-cyan-400/30 bg-cyan-500/10 text-cyan-600 text-xs font-semibold tracking-[0.18em] uppercase"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-blink-dot" />
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-blink-dot" />
             AI-Powered Career Platform · 7 Agents
           </motion.div>
 
@@ -186,14 +186,14 @@ export default function LandingPage() {
             <h1 className="font-display text-5xl sm:text-6xl md:text-8xl font-black tracking-tight leading-[0.92]">
               <span className="gradient-text">Your AI career,</span>
               <br />
-              <span className="text-white" style={{ textShadow: "0 0 80px rgba(255,255,255,0.06)" }}>in orbit.</span>
+              <span className="text-slate-800">in orbit.</span>
             </h1>
           </motion.div>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.42, duration: 0.8 }}
-            className="text-white/45 text-lg md:text-xl max-w-xl mb-10 leading-relaxed"
+            className="text-slate-500 text-lg md:text-xl max-w-xl mb-10 leading-relaxed"
           >
             A multi-agent copilot that scouts opportunities, closes skill gaps,
             perfects your resume, and preps you for every interview — all on autopilot.
@@ -237,9 +237,10 @@ export default function LandingPage() {
             <motion.button
               whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
               onClick={() => document.getElementById("agents")?.scrollIntoView({ behavior: "smooth" })}
-              className="px-10 h-14 rounded-2xl font-display text-sm tracking-wider text-white/65 hover:text-white
-                border border-white/10 hover:border-white/20
-                bg-white/[0.025] hover:bg-white/[0.05]
+              className="px-10 h-14 rounded-2xl font-display text-sm tracking-wider text-slate-500 hover:text-slate-800
+                border border-slate-200 hover:border-slate-300
+                bg-white/60 hover:bg-white/80
+                shadow-[4px_4px_14px_rgba(150,165,210,0.25),-3px_-3px_10px_rgba(255,255,255,0.9)]
                 transition-all duration-300 flex items-center gap-2 justify-center"
             >
               Explore Agents <ArrowRight className="w-4 h-4" />
@@ -254,7 +255,7 @@ export default function LandingPage() {
             {[["7", "AI Agents"], ["ATS", "Optimized"], ["Live", "Job Links"]].map(([val, label]) => (
               <motion.div key={label} whileHover={{ y: -3 }} className="space-y-1 cursor-default">
                 <p className="font-display text-2xl font-black gradient-text-cyan">{val}</p>
-                <p className="text-white/30 text-[11px] tracking-[0.18em] uppercase font-semibold">{label}</p>
+                <p className="text-slate-400 text-[11px] tracking-[0.18em] uppercase font-semibold">{label}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -267,17 +268,17 @@ export default function LandingPage() {
         >
           <motion.div
             animate={{ y: [0, 9, 0] }} transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
-            className="w-5 h-8 rounded-full border border-white/15 flex items-start justify-center pt-1.5"
+            className="w-5 h-8 rounded-full border border-slate-300 flex items-start justify-center pt-1.5"
           >
-            <div className="w-1 h-1.5 rounded-full bg-white/35" />
+            <div className="w-1 h-1.5 rounded-full bg-slate-400/60" />
           </motion.div>
-          <p className="text-[10px] text-white/20 tracking-widest uppercase font-semibold">Scroll</p>
+          <p className="text-[10px] text-slate-400 tracking-widest uppercase font-semibold">Scroll</p>
         </motion.div>
       </section>
 
       {/* ── Features strip ──────────────────────────────────── */}
       <section className="relative z-[2] py-20 px-4"
-        style={{ background: "rgba(6,9,18,0.6)", borderTop: "1px solid rgba(255,255,255,0.04)", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+        style={{ background: "rgba(255,255,255,0.45)", borderTop: "1px solid rgba(160,180,240,0.2)", borderBottom: "1px solid rgba(160,180,240,0.2)", backdropFilter: "blur(12px)" }}>
         <div className="container mx-auto max-w-5xl">
           <div className="grid md:grid-cols-3 gap-5">
             {FEATURES.map((f, i) => (
@@ -288,12 +289,12 @@ export default function LandingPage() {
                 whileHover={{ y: -4, transition: { duration: 0.2 } }}
                 className="flex items-start gap-4 p-6 neu-card cursor-default"
               >
-                <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/18 flex items-center justify-center shrink-0">
-                  <f.icon className="w-5 h-5 text-cyan-400" />
+                <div className="w-10 h-10 rounded-xl bg-cyan-500/12 border border-cyan-400/25 flex items-center justify-center shrink-0">
+                  <f.icon className="w-5 h-5 text-cyan-600" />
                 </div>
                 <div>
-                  <h3 className="font-display font-bold text-sm text-white mb-1">{f.title}</h3>
-                  <p className="text-white/40 text-sm leading-relaxed">{f.desc}</p>
+                  <h3 className="font-display font-bold text-sm text-slate-800 mb-1">{f.title}</h3>
+                  <p className="text-slate-500 text-sm leading-relaxed">{f.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -309,9 +310,9 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <p className="text-[10px] font-bold tracking-[0.22em] text-cyan-400/60 uppercase mb-4">The Crew</p>
-            <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4">Meet your agent crew</h2>
-            <p className="text-white/35 text-sm max-w-md mx-auto leading-relaxed">
+            <p className="text-[10px] font-bold tracking-[0.22em] text-cyan-600/70 uppercase mb-4">The Crew</p>
+            <h2 className="font-display text-3xl md:text-5xl font-bold text-slate-800 mb-4">Meet your agent crew</h2>
+            <p className="text-slate-500 text-sm max-w-md mx-auto leading-relaxed">
               Seven specialized AI agents working in concert to accelerate your career trajectory.
             </p>
           </motion.div>
@@ -335,7 +336,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <h3 className={`font-display font-bold text-base ${c.text} mb-1.5`}>{agent.title}</h3>
-                    <p className="text-white/38 text-sm leading-relaxed">{agent.desc}</p>
+                    <p className="text-slate-500 text-sm leading-relaxed">{agent.desc}</p>
                   </div>
                 </motion.div>
               );
@@ -356,8 +357,8 @@ export default function LandingPage() {
             <div className="absolute -top-20 -left-20 w-60 h-60 bg-cyan-500/6 rounded-full blur-[80px] pointer-events-none" />
             <div className="absolute -bottom-20 -right-20 w-60 h-60 bg-purple-500/6 rounded-full blur-[80px] pointer-events-none" />
             <div className="relative z-10">
-              <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">Ready to launch?</h2>
-              <p className="text-white/38 mb-8 max-w-md mx-auto text-sm leading-relaxed">
+              <h2 className="font-display text-3xl md:text-4xl font-bold text-slate-800 mb-4">Ready to launch?</h2>
+              <p className="text-slate-500 mb-8 max-w-md mx-auto text-sm leading-relaxed">
                 Your AI crew is standing by. Start optimizing your career today.
               </p>
               <SignedOut>
@@ -391,13 +392,13 @@ export default function LandingPage() {
       </section>
 
       {/* ── Footer ──────────────────────────────────────────── */}
-      <footer className="relative z-[2] py-10 text-center border-t border-white/[0.04]"
-        style={{ background: "rgba(4,6,14,0.7)" }}>
+      <footer className="relative z-[2] py-10 text-center"
+        style={{ background: "rgba(255,255,255,0.45)", borderTop: "1px solid rgba(160,180,240,0.2)", backdropFilter: "blur(12px)" }}>
         <div className="flex items-center justify-center gap-2 mb-3">
-          <img src={`${basePath}/logo.svg`} alt="Logo" className="w-5 h-5 opacity-35" />
-          <span className="font-display text-xs tracking-widest text-white/22">ORBITRA AI</span>
+          <img src={`${basePath}/logo.svg`} alt="Logo" className="w-5 h-5 opacity-50" />
+          <span className="font-display text-xs tracking-widest text-slate-400">ORBITRA AI</span>
         </div>
-        <p className="text-white/18 text-xs">&copy; {new Date().getFullYear()} Orbitra AI. All systems nominal.</p>
+        <p className="text-slate-400 text-xs">&copy; {new Date().getFullYear()} Orbitra AI. All systems nominal.</p>
       </footer>
     </div>
   );

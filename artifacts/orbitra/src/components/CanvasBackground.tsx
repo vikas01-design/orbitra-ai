@@ -77,7 +77,7 @@ export default function CanvasBackground() {
         // Draw dot
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(147,210,255,${p.opacity})`;
+        ctx.fillStyle = `rgba(80,120,200,${p.opacity * 0.7})`;
         ctx.fill();
       }
 
@@ -90,11 +90,11 @@ export default function CanvasBackground() {
           const dy = a.y - b.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < CONNECT_DIST) {
-            const alpha = (1 - dist / CONNECT_DIST) * 0.14;
+            const alpha = (1 - dist / CONNECT_DIST) * 0.1;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = `rgba(100,180,255,${alpha})`;
+            ctx.strokeStyle = `rgba(80,120,200,${alpha})`;
             ctx.lineWidth = 0.7;
             ctx.stroke();
           }

@@ -18,16 +18,14 @@ function SidebarContent({ onNav }: { onNav?: () => void }) {
   return (
     <div className="flex flex-col h-full py-5 px-3 gap-1">
       {/* Logo */}
-      <Link href="/" className="flex items-center gap-2.5 px-3 py-3 mb-5 rounded-xl hover:bg-white/[0.03] transition-colors" onClick={onNav}>
-        <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Orbitra" className="w-8 h-8 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
+      <Link href="/" className="flex items-center gap-2.5 px-3 py-3 mb-5 rounded-xl hover:bg-white/[0.04] transition-colors" onClick={onNav}>
+        <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Orbitra" className="w-8 h-8 drop-shadow-[0_0_10px_rgba(34,211,238,0.7)]" />
         <span className="font-display font-bold text-base tracking-widest text-white">ORBITRA</span>
         <span className="ml-auto w-1.5 h-1.5 rounded-full bg-cyan-400 animate-blink-dot" />
       </Link>
 
-      {/* Section label */}
-      <p className="text-[9px] font-semibold tracking-[0.18em] text-white/25 uppercase px-3 mb-1.5">Navigation</p>
+      <p className="text-[9px] font-semibold tracking-[0.18em] text-white/22 uppercase px-3 mb-1.5">Navigation</p>
 
-      {/* Nav Links */}
       <nav className="flex flex-col gap-0.5 flex-1">
         {NAV_LINKS.map((link) => {
           const active = location.startsWith(link.href);
@@ -49,8 +47,9 @@ function SidebarContent({ onNav }: { onNav?: () => void }) {
       </nav>
 
       {/* Bottom panel */}
-      <div className="border-t border-white/[0.06] pt-4 space-y-3 mt-2">
-        <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500/8 to-purple-500/8 border border-white/[0.06]">
+      <div className="border-t border-white/[0.055] pt-4 space-y-3 mt-2">
+        <div className="px-3 py-2.5 rounded-xl border border-cyan-500/18 flex items-center gap-2.5"
+          style={{ background: "linear-gradient(135deg, rgba(0,180,255,0.07), rgba(120,40,240,0.07))" }}>
           <Sparkles className="w-4 h-4 text-cyan-400 shrink-0" />
           <div className="min-w-0">
             <p className="text-xs font-semibold text-white leading-none">7 Agents Active</p>
@@ -58,8 +57,8 @@ function SidebarContent({ onNav }: { onNav?: () => void }) {
           </div>
         </div>
         <div className="flex items-center gap-3 px-3 py-2">
-          <UserButton appearance={{ elements: { avatarBox: "w-8 h-8 border border-white/20 shadow-[0_0_10px_rgba(34,211,238,0.15)]" } }} />
-          <span className="text-xs text-white/40 font-medium">Account</span>
+          <UserButton appearance={{ elements: { avatarBox: "w-8 h-8 border border-white/20 shadow-[0_0_10px_rgba(34,211,238,0.2)]" } }} />
+          <span className="text-xs text-white/38 font-medium">Account</span>
         </div>
       </div>
     </div>
@@ -75,26 +74,29 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col fixed left-0 top-0 h-full w-[220px] z-40
         border-r border-white/[0.055]
-        bg-[rgba(6,9,15,0.96)] backdrop-blur-2xl
-        shadow-[4px_0_28px_rgba(0,0,0,0.5)]">
+        backdrop-blur-2xl
+        shadow-[4px_0_32px_rgba(0,0,0,0.55)]"
+        style={{ background: "linear-gradient(180deg, rgba(8,10,28,0.97) 0%, rgba(10,8,24,0.97) 100%)" }}>
         <SidebarContent />
       </aside>
 
       {/* Mobile Top Bar */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 h-14
-        border-b border-white/[0.06] bg-[rgba(6,9,15,0.96)] backdrop-blur-2xl
+        border-b border-white/[0.06] backdrop-blur-2xl
         flex items-center justify-between px-4
-        shadow-[0_4px_24px_rgba(0,0,0,0.5)]">
+        shadow-[0_4px_28px_rgba(0,0,0,0.55)]"
+        style={{ background: "rgba(8,10,28,0.97)" }}>
         <Link href="/" className="flex items-center gap-2">
-          <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Orbitra" className="w-7 h-7 drop-shadow-[0_0_6px_rgba(34,211,238,0.5)]" />
+          <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Orbitra" className="w-7 h-7 drop-shadow-[0_0_6px_rgba(34,211,238,0.6)]" />
           <span className="font-display font-bold text-sm tracking-widest">ORBITRA</span>
         </Link>
         <div className="flex items-center gap-3">
           <UserButton appearance={{ elements: { avatarBox: "w-8 h-8 border border-white/20" } }} />
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="p-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] transition-colors text-white/60 hover:text-white border border-white/[0.06]"
-          >
+            className="p-2 rounded-lg border border-white/[0.07] text-white/55 hover:text-white
+              hover:bg-white/[0.07] transition-colors"
+            style={{ background: "rgba(255,255,255,0.03)" }}>
             {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </button>
         </div>
@@ -106,15 +108,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <>
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="md:hidden fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
+              className="md:hidden fixed inset-0 z-40 bg-black/75 backdrop-blur-sm"
               onClick={() => setMobileOpen(false)}
             />
             <motion.aside
               initial={{ x: -240 }} animate={{ x: 0 }} exit={{ x: -240 }}
               transition={{ type: "spring", damping: 28, stiffness: 220 }}
               className="md:hidden fixed left-0 top-0 h-full w-[220px] z-50
-                border-r border-white/[0.06]
-                bg-[rgba(6,9,15,0.99)] backdrop-blur-2xl"
+                border-r border-white/[0.07] backdrop-blur-2xl"
+              style={{ background: "rgba(8,10,28,0.99)" }}
             >
               <SidebarContent onNav={() => setMobileOpen(false)} />
             </motion.aside>
