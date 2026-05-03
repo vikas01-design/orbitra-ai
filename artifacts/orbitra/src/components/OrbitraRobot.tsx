@@ -126,9 +126,9 @@ export default function OrbitraRobot({ isLaunching = false, onLaunchComplete }: 
                 <stop offset="100%" stopColor="transparent" />
               </linearGradient>
               <radialGradient id="r-body-grad" cx="40%" cy="35%" r="60%">
-                <stop offset="0%" stopColor="rgba(34,211,238,0.08)" />
-                <stop offset="60%" stopColor="rgba(10,10,30,0.9)" />
-                <stop offset="100%" stopColor="rgba(5,5,18,0.98)" />
+                <stop offset="0%" stopColor="rgba(12,12,28,0.95)" />
+                <stop offset="60%" stopColor="rgba(8,8,22,0.97)" />
+                <stop offset="100%" stopColor="rgba(4,4,14,1)" />
               </radialGradient>
               <linearGradient id="r-scan-beam" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.5" />
