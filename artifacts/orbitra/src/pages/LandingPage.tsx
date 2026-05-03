@@ -397,14 +397,16 @@ export default function LandingPage() {
       {/* ── Workflow Blueprint ──────────────────────────────── */}
       <section id="workflow" className="relative z-[2] py-28 px-4 overflow-hidden">
 
-        {/* Blueprint grid background */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.035]"
+        {/* Diagonal stripe background — distinct from agents section */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.025]"
           style={{
-            backgroundImage: `
-              linear-gradient(rgba(34,211,238,1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(34,211,238,1) 1px, transparent 1px)
-            `,
-            backgroundSize: "40px 40px",
+            backgroundImage: `repeating-linear-gradient(
+              -45deg,
+              rgba(139,92,246,1) 0px,
+              rgba(139,92,246,1) 1px,
+              transparent 1px,
+              transparent 28px
+            )`,
           }}
         />
 
@@ -423,127 +425,151 @@ export default function LandingPage() {
             </p>
           </motion.div>
 
-          {/* Pipeline */}
-          <div className="relative">
+          {/* Vertical alternating timeline */}
+          <div className="relative max-w-3xl mx-auto">
 
-            {/* Connecting spine line (desktop) */}
-            <div className="hidden md:block absolute top-[52px] left-[10%] right-[10%] h-px pointer-events-none"
-              style={{ background: "linear-gradient(90deg, rgba(34,211,238,0.15), rgba(139,92,246,0.25), rgba(34,211,238,0.15))" }}
+            {/* Central spine */}
+            <div className="absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2 hidden md:block"
+              style={{ background: "linear-gradient(180deg, rgba(34,211,238,0.3) 0%, rgba(139,92,246,0.4) 50%, rgba(245,158,11,0.3) 100%)" }}
             />
 
-            {/* Steps row 1: 4 steps */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-              {[
-                { step: "01", icon: User,       color: "cyan",    label: "Profile Setup",       detail: "You define your target role, skills & goals." },
-                { step: "02", icon: Bot,         color: "cyan",    label: "Manager Activates",   detail: "Orchestrates all agents and builds your strategy." },
-                { step: "03", icon: Target,      color: "blue",    label: "Radar Scans",         detail: "Discovers ranked opportunities matching your profile." },
-                { step: "04", icon: Activity,    color: "violet",  label: "Skill Gap Mapped",    detail: "Gaps identified, learning roadmap generated instantly." },
-              ].map(({ step, icon: Icon, color, label, detail }, i) => {
-                const colors: Record<string, { dot: string; text: string; bg: string; border: string; line: string }> = {
-                  cyan:   { dot: "bg-cyan-500",   text: "text-cyan-600",   bg: "bg-cyan-50",   border: "border-cyan-200",   line: "from-cyan-500/30" },
-                  blue:   { dot: "bg-blue-500",   text: "text-blue-600",   bg: "bg-blue-50",   border: "border-blue-200",   line: "from-blue-500/30" },
-                  violet: { dot: "bg-violet-500", text: "text-violet-600", bg: "bg-violet-50", border: "border-violet-200", line: "from-violet-500/30" },
-                };
-                const c = colors[color];
-                return (
-                  <motion.div key={step}
-                    initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-40px" }}
-                    transition={{ delay: i * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="relative"
-                  >
-                    <div className="neu-card p-5 flex flex-col gap-3 h-full">
-                      {/* Step number + icon */}
-                      <div className="flex items-start justify-between">
-                        <div className={`w-10 h-10 rounded-xl ${c.bg} border ${c.border} flex items-center justify-center shrink-0`}>
-                          <Icon className={`w-5 h-5 ${c.text}`} />
-                        </div>
-                        <span className="font-display text-xs font-bold text-slate-300 tracking-widest">{step}</span>
+            {[
+              {
+                icon: User,      step: "01", side: "left",
+                agent: "You",    tag: "INPUT",
+                tagColor: "bg-slate-100 text-slate-500 border-slate-200",
+                accent: "border-l-cyan-400", dot: "bg-cyan-500", dotRing: "ring-cyan-200",
+                label: "Set your profile",
+                detail: "Define your target role, skills, and career goals. This is the only manual step.",
+                output: "Profile created",
+              },
+              {
+                icon: Bot,       step: "02", side: "right",
+                agent: "Manager Agent", tag: "ORCHESTRATOR",
+                tagColor: "bg-cyan-50 text-cyan-700 border-cyan-200",
+                accent: "border-l-cyan-500", dot: "bg-cyan-500", dotRing: "ring-cyan-200",
+                label: "Builds your strategy",
+                detail: "Reads your profile, sets goals, and dispatches all other agents with context.",
+                output: "Strategy dispatched",
+              },
+              {
+                icon: Target,    step: "03", side: "left",
+                agent: "Opportunity Radar", tag: "AGENT",
+                tagColor: "bg-blue-50 text-blue-700 border-blue-200",
+                accent: "border-l-blue-500", dot: "bg-blue-500", dotRing: "ring-blue-200",
+                label: "Scouts live opportunities",
+                detail: "Crawls job boards, ranks matches by fit score, and surfaces the best-aligned roles.",
+                output: "Ranked opportunity list",
+              },
+              {
+                icon: Activity,  step: "04", side: "right",
+                agent: "Skill Gap Analyzer", tag: "AGENT",
+                tagColor: "bg-violet-50 text-violet-700 border-violet-200",
+                accent: "border-l-violet-500", dot: "bg-violet-500", dotRing: "ring-violet-200",
+                label: "Maps what's missing",
+                detail: "Compares your skills against top roles and generates a prioritised learning roadmap.",
+                output: "Roadmap + gap report",
+              },
+              {
+                icon: FileText,  step: "05", side: "left",
+                agent: "Resume AI", tag: "AGENT",
+                tagColor: "bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200",
+                accent: "border-l-fuchsia-500", dot: "bg-fuchsia-500", dotRing: "ring-fuchsia-200",
+                label: "Tailors your application",
+                detail: "Rewrites your resume per role, passes ATS filters, and generates a custom cover letter.",
+                output: "ATS-ready resume + letter",
+              },
+              {
+                icon: Video,     step: "06", side: "right",
+                agent: "AI Interviewer", tag: "AGENT",
+                tagColor: "bg-pink-50 text-pink-700 border-pink-200",
+                accent: "border-l-pink-500", dot: "bg-pink-500", dotRing: "ring-pink-200",
+                label: "Runs mock interviews",
+                detail: "Simulates real high-pressure interviews with role-specific questions and instant feedback.",
+                output: "Interview readiness score",
+              },
+              {
+                icon: RefreshCw, step: "07", side: "left",
+                agent: "Recovery Agent", tag: "FALLBACK",
+                tagColor: "bg-rose-50 text-rose-700 border-rose-200",
+                accent: "border-l-rose-400", dot: "bg-rose-500", dotRing: "ring-rose-200",
+                label: "Pivots after rejection",
+                detail: "Detects rejections, finds alternative paths, and restarts the pipeline on similar roles.",
+                output: "Alternative opportunities",
+              },
+              {
+                icon: Wrench,    step: "08", side: "right",
+                agent: "Self-Correction", tag: "OPTIMIZER",
+                tagColor: "bg-amber-50 text-amber-700 border-amber-200",
+                accent: "border-l-amber-500", dot: "bg-amber-500", dotRing: "ring-amber-200",
+                label: "Learns and improves",
+                detail: "Analyses outcomes across all agents, updates strategy weights, and improves over time.",
+                output: "Optimised pipeline",
+              },
+            ].map(({ icon: Icon, step, side, agent, tag, tagColor, accent, dot, dotRing, label, detail, output }, i) => (
+              <motion.div key={step}
+                initial={{ opacity: 0, x: side === "left" ? -30 : 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: i * 0.08, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                className={`relative flex items-start gap-0 mb-6 ${side === "right" ? "md:flex-row-reverse" : "md:flex-row"} flex-row`}
+              >
+                {/* Content card — half width on desktop */}
+                <div className={`w-full md:w-[calc(50%-28px)] ${side === "right" ? "md:pl-0" : "md:pr-0"}`}>
+                  <div className={`border-l-4 ${accent} bg-white/80 rounded-r-xl rounded-bl-xl p-4 shadow-[0_2px_12px_rgba(150,165,210,0.12)] border border-l-0 border-slate-100`}>
+                    {/* Top row */}
+                    <div className="flex items-center justify-between mb-2.5">
+                      <div className="flex items-center gap-2">
+                        <Icon className="w-4 h-4 text-slate-400" />
+                        <span className="font-display font-bold text-xs text-slate-700 tracking-wide">{agent}</span>
                       </div>
-                      {/* Label */}
-                      <div>
-                        <p className={`font-display font-bold text-sm ${c.text} mb-1`}>{label}</p>
-                        <p className="text-slate-400 text-xs leading-relaxed">{detail}</p>
-                      </div>
-                      {/* Active dot on top */}
-                      <div className={`absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full ${c.dot} border-2 border-white shadow-sm hidden md:block`} />
+                      <span className={`text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-full border ${tagColor}`}>{tag}</span>
                     </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-
-            {/* Arrow between rows */}
-            <motion.div
-              initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="flex justify-center my-4"
-            >
-              <div className="flex flex-col items-center gap-1">
-                <div className="w-px h-6 bg-gradient-to-b from-violet-300/60 to-fuchsia-300/60" />
-                <div className="w-2 h-2 rounded-full bg-fuchsia-400/60" />
-                <div className="w-px h-6 bg-gradient-to-b from-fuchsia-300/60 to-pink-300/60" />
-              </div>
-            </motion.div>
-
-            {/* Connecting spine line row 2 (desktop) */}
-            <div className="hidden md:block absolute top-[calc(52px+theme(spacing.4)+theme(spacing.36)+theme(spacing.10)+theme(spacing.4)+theme(spacing.4))] left-[10%] right-[10%] h-px pointer-events-none"
-              style={{ background: "linear-gradient(90deg, rgba(232,121,249,0.15), rgba(244,114,182,0.25), rgba(245,158,11,0.2))" }}
-            />
-
-            {/* Steps row 2: 3 steps + outcome */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                { step: "05", icon: FileText,  color: "fuchsia", label: "Resume Polished",      detail: "ATS-optimised resume + tailored cover letter generated." },
-                { step: "06", icon: Video,      color: "pink",    label: "Interview Simulated",  detail: "AI Interviewer runs real-pressure mock sessions." },
-                { step: "07", icon: RefreshCw,  color: "pink",    label: "Recovery Triggered",   detail: "Rejection? Strategy pivots with alternative paths." },
-                { step: "08", icon: Wrench,     color: "amber",   label: "System Self-Corrects", detail: "Learns from outcomes, continuously self-optimises." },
-              ].map(({ step, icon: Icon, color, label, detail }, i) => {
-                const colors: Record<string, { dot: string; text: string; bg: string; border: string }> = {
-                  fuchsia: { dot: "bg-fuchsia-500", text: "text-fuchsia-600", bg: "bg-fuchsia-50", border: "border-fuchsia-200" },
-                  pink:    { dot: "bg-pink-500",    text: "text-pink-600",    bg: "bg-pink-50",    border: "border-pink-200" },
-                  amber:   { dot: "bg-amber-500",   text: "text-amber-600",   bg: "bg-amber-50",   border: "border-amber-200" },
-                };
-                const c = colors[color];
-                return (
-                  <motion.div key={step}
-                    initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-40px" }}
-                    transition={{ delay: i * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="relative"
-                  >
-                    <div className="neu-card p-5 flex flex-col gap-3 h-full">
-                      <div className="flex items-start justify-between">
-                        <div className={`w-10 h-10 rounded-xl ${c.bg} border ${c.border} flex items-center justify-center shrink-0`}>
-                          <Icon className={`w-5 h-5 ${c.text}`} />
-                        </div>
-                        <span className="font-display text-xs font-bold text-slate-300 tracking-widest">{step}</span>
-                      </div>
-                      <div>
-                        <p className={`font-display font-bold text-sm ${c.text} mb-1`}>{label}</p>
-                        <p className="text-slate-400 text-xs leading-relaxed">{detail}</p>
-                      </div>
-                      <div className={`absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full ${c.dot} border-2 border-white shadow-sm hidden md:block`} />
+                    {/* Step label */}
+                    <p className="font-display font-black text-slate-800 text-sm mb-1 leading-snug">{label}</p>
+                    <p className="text-slate-400 text-xs leading-relaxed mb-3">{detail}</p>
+                    {/* Output */}
+                    <div className="flex items-center gap-1.5 pt-2.5 border-t border-slate-100">
+                      <ChevronRight className="w-3 h-3 text-slate-300" />
+                      <span className="text-[10px] font-semibold text-slate-400 tracking-wide uppercase">Output</span>
+                      <span className="text-[10px] font-bold text-slate-600 ml-1">{output}</span>
                     </div>
-                  </motion.div>
-                );
-              })}
-            </div>
+                  </div>
+                </div>
 
-            {/* Outcome pill */}
+                {/* Center node */}
+                <div className="hidden md:flex flex-col items-center shrink-0 w-14 relative z-10">
+                  <div className={`w-8 h-8 rounded-full ${dot} ring-4 ${dotRing} flex items-center justify-center shadow-sm`}>
+                    <span className="font-display text-[9px] font-black text-white">{step}</span>
+                  </div>
+                </div>
+
+                {/* Spacer other side */}
+                <div className="hidden md:block w-[calc(50%-28px)]" />
+
+                {/* Mobile step badge */}
+                <div className={`md:hidden shrink-0 w-7 h-7 rounded-full ${dot} flex items-center justify-center mr-3 mt-0.5 shadow-sm`}>
+                  <span className="font-display text-[9px] font-black text-white">{step}</span>
+                </div>
+              </motion.div>
+            ))}
+
+            {/* Final outcome */}
             <motion.div
-              initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-10 flex justify-center"
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="flex justify-center mt-8 relative z-10"
             >
-              <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl
-                border border-cyan-200 bg-gradient-to-r from-cyan-50 to-violet-50
-                shadow-[0_2px_12px_rgba(34,211,238,0.1)]">
-                <div className="w-2 h-2 rounded-full bg-cyan-500 animate-blink-dot" />
-                <span className="font-display font-bold text-sm text-slate-700 tracking-wide">Offer Accepted</span>
-                <span className="text-slate-300">·</span>
-                <span className="text-slate-400 text-xs">Full cycle, fully automated</span>
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-px h-8 bg-gradient-to-b from-amber-300/60 to-cyan-300/60" />
+                <div className="inline-flex items-center gap-3 px-7 py-3.5 rounded-2xl
+                  bg-gradient-to-r from-cyan-500 to-violet-600
+                  shadow-[0_4px_24px_rgba(34,211,238,0.25)]">
+                  <div className="w-2 h-2 rounded-full bg-white animate-blink-dot" />
+                  <span className="font-display font-bold text-sm text-white tracking-wide">Offer Accepted</span>
+                  <span className="text-white/40 text-xs">· Full cycle automated</span>
+                </div>
               </div>
             </motion.div>
           </div>
