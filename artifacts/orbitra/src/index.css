@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 @layer theme, base, clerk, components, utilities;
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -91,9 +91,9 @@
   --sidebar-accent-foreground: 230 45% 14%;
   --sidebar-ring: 185 100% 38%;
 
-  --app-font-sans: 'Space Grotesk', sans-serif;
-  --app-font-display: 'Orbitron', sans-serif;
-  --app-font-mono: 'JetBrains Mono', monospace;
+  --app-font-sans: 'Poppins', sans-serif;
+  --app-font-display: 'Poppins', sans-serif;
+  --app-font-mono: 'Poppins', monospace;
   --radius: 0.75rem;
   --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
   --sidebar-accent-border:  hsl(from hsl(var(--sidebar-accent))  h s calc(l + var(--opaque-button-border-intensity)) / alpha);
