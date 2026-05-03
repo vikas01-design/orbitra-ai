@@ -56,7 +56,7 @@ export default function LandingPage() {
       mouseX.set(e.clientX - window.innerWidth  / 2);
       mouseY.set(e.clientY - window.innerHeight / 2);
     };
-    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mousemove", onMove, { passive: true });
     return () => window.removeEventListener("mousemove", onMove);
   }, [mouseX, mouseY]);
 
@@ -179,7 +179,7 @@ export default function LandingPage() {
       <section ref={heroRef}
         className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 pt-20 overflow-hidden z-[2]">
 
-        <motion.div style={{ y: heroY, opacity: heroO }} className="flex flex-col items-center">
+        <motion.div style={{ y: heroY, opacity: heroO, willChange: "transform, opacity" }} className="flex flex-col items-center">
 
           {/* Robot — with launch animation */}
           <motion.div
