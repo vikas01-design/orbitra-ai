@@ -81,15 +81,17 @@ export default function DashboardPage() {
           >
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
               style={{ background: `radial-gradient(ellipse at 50% 0%, ${stat.glow} 0%, transparent 70%)` }} />
-            <div className={`w-9 h-9 rounded-xl border flex items-center justify-center mb-4 ${stat.iconBg}`}>
-              <stat.icon className={`w-4 h-4 ${stat.text}`} />
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 ${stat.iconBg}`}>
+                <stat.icon className={`w-4 h-4 ${stat.text}`} />
+              </div>
+              <p className="text-slate-500 text-xs font-semibold leading-tight">{stat.title}</p>
             </div>
-            <div className={`font-display text-3xl font-black ${stat.text} mb-1`}>
+            <div className={`font-display text-3xl font-black ${stat.text}`}>
               {isSummaryLoading
                 ? <div className="h-9 w-14 rounded-lg shimmer-bg" />
                 : <AnimatedNumber value={(summary as any)?.[stat.key] ?? 0} />}
             </div>
-            <p className="text-slate-400 text-xs font-medium">{stat.title}</p>
           </motion.div>
         ))}
       </div>
