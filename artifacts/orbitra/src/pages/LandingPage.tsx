@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import OrbitraRobot from "@/components/OrbitraRobot";
 import CanvasBackground from "@/components/CanvasBackground";
 import FloatingOrbs from "@/components/FloatingOrbs";
-import { ArrowRight, Bot, Target, Activity, FileText, RefreshCw, Wrench, Video, Zap, Shield, Brain } from "lucide-react";
+import { ArrowRight, Bot, Target, Activity, FileText, RefreshCw, Wrench, Video, Zap, Shield, Brain, User, ChevronRight } from "lucide-react";
 
 const AGENTS = [
   { icon: Bot,       title: "Manager",           desc: "Coordinates your entire career strategy with precision.",    color: "cyan",    span: "md:col-span-2" },
@@ -390,6 +390,162 @@ export default function LandingPage() {
                 </motion.div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Workflow Blueprint ──────────────────────────────── */}
+      <section id="workflow" className="relative z-[2] py-28 px-4 overflow-hidden">
+
+        {/* Blueprint grid background */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.035]"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(34,211,238,1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(34,211,238,1) 1px, transparent 1px)
+            `,
+            backgroundSize: "40px 40px",
+          }}
+        />
+
+        <div className="container mx-auto max-w-5xl relative">
+
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-20"
+          >
+            <p className="text-[10px] font-bold tracking-[0.22em] text-violet-600/70 uppercase mb-4">How It Works</p>
+            <h2 className="font-display text-3xl md:text-5xl font-bold text-slate-800 mb-4">The Orbitra workflow</h2>
+            <p className="text-slate-500 text-sm max-w-md mx-auto leading-relaxed">
+              From first login to accepted offer — a fully automated pipeline of 7 specialized agents working in sequence.
+            </p>
+          </motion.div>
+
+          {/* Pipeline */}
+          <div className="relative">
+
+            {/* Connecting spine line (desktop) */}
+            <div className="hidden md:block absolute top-[52px] left-[10%] right-[10%] h-px pointer-events-none"
+              style={{ background: "linear-gradient(90deg, rgba(34,211,238,0.15), rgba(139,92,246,0.25), rgba(34,211,238,0.15))" }}
+            />
+
+            {/* Steps row 1: 4 steps */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+              {[
+                { step: "01", icon: User,       color: "cyan",    label: "Profile Setup",       detail: "You define your target role, skills & goals." },
+                { step: "02", icon: Bot,         color: "cyan",    label: "Manager Activates",   detail: "Orchestrates all agents and builds your strategy." },
+                { step: "03", icon: Target,      color: "blue",    label: "Radar Scans",         detail: "Discovers ranked opportunities matching your profile." },
+                { step: "04", icon: Activity,    color: "violet",  label: "Skill Gap Mapped",    detail: "Gaps identified, learning roadmap generated instantly." },
+              ].map(({ step, icon: Icon, color, label, detail }, i) => {
+                const colors: Record<string, { dot: string; text: string; bg: string; border: string; line: string }> = {
+                  cyan:   { dot: "bg-cyan-500",   text: "text-cyan-600",   bg: "bg-cyan-50",   border: "border-cyan-200",   line: "from-cyan-500/30" },
+                  blue:   { dot: "bg-blue-500",   text: "text-blue-600",   bg: "bg-blue-50",   border: "border-blue-200",   line: "from-blue-500/30" },
+                  violet: { dot: "bg-violet-500", text: "text-violet-600", bg: "bg-violet-50", border: "border-violet-200", line: "from-violet-500/30" },
+                };
+                const c = colors[color];
+                return (
+                  <motion.div key={step}
+                    initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-40px" }}
+                    transition={{ delay: i * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="relative"
+                  >
+                    <div className="neu-card p-5 flex flex-col gap-3 h-full">
+                      {/* Step number + icon */}
+                      <div className="flex items-start justify-between">
+                        <div className={`w-10 h-10 rounded-xl ${c.bg} border ${c.border} flex items-center justify-center shrink-0`}>
+                          <Icon className={`w-5 h-5 ${c.text}`} />
+                        </div>
+                        <span className="font-display text-xs font-bold text-slate-300 tracking-widest">{step}</span>
+                      </div>
+                      {/* Label */}
+                      <div>
+                        <p className={`font-display font-bold text-sm ${c.text} mb-1`}>{label}</p>
+                        <p className="text-slate-400 text-xs leading-relaxed">{detail}</p>
+                      </div>
+                      {/* Active dot on top */}
+                      <div className={`absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full ${c.dot} border-2 border-white shadow-sm hidden md:block`} />
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* Arrow between rows */}
+            <motion.div
+              initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="flex justify-center my-4"
+            >
+              <div className="flex flex-col items-center gap-1">
+                <div className="w-px h-6 bg-gradient-to-b from-violet-300/60 to-fuchsia-300/60" />
+                <div className="w-2 h-2 rounded-full bg-fuchsia-400/60" />
+                <div className="w-px h-6 bg-gradient-to-b from-fuchsia-300/60 to-pink-300/60" />
+              </div>
+            </motion.div>
+
+            {/* Connecting spine line row 2 (desktop) */}
+            <div className="hidden md:block absolute top-[calc(52px+theme(spacing.4)+theme(spacing.36)+theme(spacing.10)+theme(spacing.4)+theme(spacing.4))] left-[10%] right-[10%] h-px pointer-events-none"
+              style={{ background: "linear-gradient(90deg, rgba(232,121,249,0.15), rgba(244,114,182,0.25), rgba(245,158,11,0.2))" }}
+            />
+
+            {/* Steps row 2: 3 steps + outcome */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { step: "05", icon: FileText,  color: "fuchsia", label: "Resume Polished",      detail: "ATS-optimised resume + tailored cover letter generated." },
+                { step: "06", icon: Video,      color: "pink",    label: "Interview Simulated",  detail: "AI Interviewer runs real-pressure mock sessions." },
+                { step: "07", icon: RefreshCw,  color: "pink",    label: "Recovery Triggered",   detail: "Rejection? Strategy pivots with alternative paths." },
+                { step: "08", icon: Wrench,     color: "amber",   label: "System Self-Corrects", detail: "Learns from outcomes, continuously self-optimises." },
+              ].map(({ step, icon: Icon, color, label, detail }, i) => {
+                const colors: Record<string, { dot: string; text: string; bg: string; border: string }> = {
+                  fuchsia: { dot: "bg-fuchsia-500", text: "text-fuchsia-600", bg: "bg-fuchsia-50", border: "border-fuchsia-200" },
+                  pink:    { dot: "bg-pink-500",    text: "text-pink-600",    bg: "bg-pink-50",    border: "border-pink-200" },
+                  amber:   { dot: "bg-amber-500",   text: "text-amber-600",   bg: "bg-amber-50",   border: "border-amber-200" },
+                };
+                const c = colors[color];
+                return (
+                  <motion.div key={step}
+                    initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-40px" }}
+                    transition={{ delay: i * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="relative"
+                  >
+                    <div className="neu-card p-5 flex flex-col gap-3 h-full">
+                      <div className="flex items-start justify-between">
+                        <div className={`w-10 h-10 rounded-xl ${c.bg} border ${c.border} flex items-center justify-center shrink-0`}>
+                          <Icon className={`w-5 h-5 ${c.text}`} />
+                        </div>
+                        <span className="font-display text-xs font-bold text-slate-300 tracking-widest">{step}</span>
+                      </div>
+                      <div>
+                        <p className={`font-display font-bold text-sm ${c.text} mb-1`}>{label}</p>
+                        <p className="text-slate-400 text-xs leading-relaxed">{detail}</p>
+                      </div>
+                      <div className={`absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full ${c.dot} border-2 border-white shadow-sm hidden md:block`} />
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* Outcome pill */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-10 flex justify-center"
+            >
+              <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl
+                border border-cyan-200 bg-gradient-to-r from-cyan-50 to-violet-50
+                shadow-[0_2px_12px_rgba(34,211,238,0.1)]">
+                <div className="w-2 h-2 rounded-full bg-cyan-500 animate-blink-dot" />
+                <span className="font-display font-bold text-sm text-slate-700 tracking-wide">Offer Accepted</span>
+                <span className="text-slate-300">·</span>
+                <span className="text-slate-400 text-xs">Full cycle, fully automated</span>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
