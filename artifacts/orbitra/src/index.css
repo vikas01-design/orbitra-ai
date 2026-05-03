@@ -237,7 +237,7 @@
     rgba(180,190,220,0.15) 100%
   );
   background-size: 200% auto;
-  animation: shimmer 1.9s linear infinite;
+  animation: shimmer 0.85s linear infinite;
 }
 
 /* ─── Glow utilities ─────────────────────────────────── */
