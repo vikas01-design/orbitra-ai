@@ -58,14 +58,12 @@ export default function DashboardPage() {
           className="w-14 h-14 rounded-2xl border border-slate-200 shadow-[0_4px_16px_rgba(150,165,210,0.25)] shrink-0"
         />
         <div className="flex-1 min-w-0">
-          <p className="text-slate-400 text-xs tracking-widest uppercase font-semibold mb-0.5">Welcome back</p>
-          <h1 className="font-display text-2xl font-bold truncate">
-            <span className="gradient-text-cyan">{displayName}</span>
-          </h1>
-          <p className="text-slate-500 text-sm mt-0.5">Your AI career crew is standing by.</p>
+          <p className="text-cyan-600 text-xs tracking-widest uppercase font-bold mb-0.5">Welcome back</p>
+          <h1 className="font-display text-2xl font-bold text-slate-800 truncate">{displayName}</h1>
+          <p className="text-slate-600 text-sm mt-0.5">Your AI career crew is standing by.</p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-cyan-300/50 bg-cyan-50 text-cyan-700 text-xs font-semibold shrink-0">
-          <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-blink-dot" />
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-cyan-400 bg-cyan-500 text-white text-xs font-bold shrink-0">
+          <span className="w-1.5 h-1.5 rounded-full bg-white animate-blink-dot" />
           7 Agents Active
         </div>
       </motion.div>
