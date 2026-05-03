@@ -7,19 +7,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Progress } from "@/components/ui/progress";
-import { Target, Search, Filter, Briefcase, ChevronRight, Bot } from "lucide-react";
+import { Target, Search, Briefcase, ChevronRight, Bot, Zap } from "lucide-react";
 import { toast } from "sonner";
+
+const STATUS_STYLES: Record<string, string> = {
+  open:    "text-cyan-400 border-cyan-400/30 bg-cyan-400/8",
+  applied: "text-violet-400 border-violet-400/30 bg-violet-400/8",
+  missed:  "text-rose-400 border-rose-400/30 bg-rose-400/8",
+};
+
+const FILTERS = ["all", "open", "applied", "missed"] as const;
 
 export default function OpportunitiesPage() {
   const queryClient = useQueryClient();
   const { data: opportunities, isLoading } = useListOpportunities();
   const runRadar = useRunOpportunityRadar();
-  
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [focusKeyword, setFocusKeyword] = useState("");
-  const [filter, setFilter] = useState<"all" | "open" | "applied" | "missed">("all");
+  const [filter, setFilter] = useState<typeof FILTERS[number]>("all");
 
   const handleRunRadar = () => {
     runRadar.mutate(
@@ -31,134 +37,163 @@ export default function OpportunitiesPage() {
           setIsDialogOpen(false);
           setFocusKeyword("");
         },
-        onError: () => {
-          toast.error("Radar scan failed", { description: "The agent encountered an error." });
-        }
+        onError: () => toast.error("Radar scan failed", { description: "The agent encountered an error." }),
       }
     );
   };
 
-  const filteredOpps = opportunities?.filter(o => filter === "all" || o.status === filter) || [];
+  const filteredOpps = opportunities?.filter(o => filter === "all" || o.status === filter) ?? [];
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-display font-bold flex items-center gap-3">
-            <Target className="text-cyan-400 w-8 h-8" /> Opportunity Radar
-          </h1>
-          <p className="text-muted-foreground mt-1">Your agent is continuously scanning the market.</p>
+    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-6">
+
+      {/* Header */}
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+        className="neu-card p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/4 to-transparent pointer-events-none" />
+        <div className="flex items-center gap-3 relative z-10">
+          <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+            <Target className="w-5 h-5 text-cyan-400" />
+          </div>
+          <div>
+            <h1 className="font-display font-bold text-lg text-white">Opportunity Radar</h1>
+            <p className="text-white/40 text-xs mt-0.5">Continuously scanning the market for you</p>
+          </div>
         </div>
-        
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="font-display bg-cyan-500 hover:bg-cyan-600 text-black">
+            <Button className="relative z-10 bg-gradient-to-r from-cyan-500 to-cyan-400 hover:from-cyan-400 hover:to-cyan-300
+              text-black font-display text-xs tracking-wider shadow-[0_0_20px_rgba(34,211,238,0.3)] border-0 shrink-0">
               <Search className="w-4 h-4 mr-2" /> Manual Scan
             </Button>
           </DialogTrigger>
-          <DialogContent className="glass-card border-white/10 sm:max-w-md">
+          <DialogContent className="glass-card border-white/[0.08] sm:max-w-md">
             <DialogHeader>
-              <DialogTitle className="font-display text-xl flex items-center gap-2">
+              <DialogTitle className="font-display text-lg flex items-center gap-2">
                 <Target className="w-5 h-5 text-cyan-400" /> Deploy Radar Agent
               </DialogTitle>
-              <DialogDescription>
-                Command the agent to scan for new roles. Optionally provide a focus keyword to narrow the search.
+              <DialogDescription className="text-white/45 text-sm">
+                Optionally provide a focus keyword to narrow the scan.
               </DialogDescription>
             </DialogHeader>
             <div className="py-4">
-              <Input 
-                value={focusKeyword} 
-                onChange={e => setFocusKeyword(e.target.value)} 
-                placeholder="e.g. 'Remote', 'Web3', 'Lead'" 
-                className="bg-background/50 border-white/10 focus-visible:ring-cyan-400"
-              />
+              <Input value={focusKeyword} onChange={e => setFocusKeyword(e.target.value)}
+                placeholder="e.g. Remote, Web3, Lead Engineer"
+                className="bg-black/30 border-white/10 focus-visible:ring-cyan-400/50 text-white placeholder:text-white/25" />
             </div>
             <DialogFooter>
-              <Button variant="ghost" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
-              <Button onClick={handleRunRadar} disabled={runRadar.isPending} className="bg-cyan-500 hover:bg-cyan-600 text-black">
-                {runRadar.isPending ? "Scanning..." : "Initialize Scan"}
+              <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="text-white/50 hover:text-white">Cancel</Button>
+              <Button onClick={handleRunRadar} disabled={runRadar.isPending}
+                className="bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-display border-0">
+                {runRadar.isPending
+                  ? <><Bot className="w-4 h-4 mr-2 animate-pulse" /> Scanning...</>
+                  : <><Zap className="w-4 h-4 mr-2" /> Initialize Scan</>}
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
+      </motion.div>
+
+      {/* Filter chips */}
+      <div className="flex gap-2 flex-wrap">
+        {FILTERS.map(f => (
+          <button key={f} onClick={() => setFilter(f)}
+            className={`px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase border transition-all duration-200
+              ${filter === f
+                ? "bg-cyan-500/12 border-cyan-500/35 text-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.15)]"
+                : "border-white/[0.08] text-white/40 hover:text-white/70 hover:border-white/15 bg-white/[0.02]"}`}>
+            {f}
+          </button>
+        ))}
+        {opportunities && (
+          <span className="ml-auto self-center text-xs text-white/25 font-mono">
+            {filteredOpps.length} result{filteredOpps.length !== 1 ? "s" : ""}
+          </span>
+        )}
       </div>
 
-      <div className="flex flex-wrap gap-2 pb-4 border-b border-white/5">
-        <Button variant={filter === "all" ? "secondary" : "ghost"} size="sm" onClick={() => setFilter("all")} className="rounded-full">All</Button>
-        <Button variant={filter === "open" ? "secondary" : "ghost"} size="sm" onClick={() => setFilter("open")} className="rounded-full">Open</Button>
-        <Button variant={filter === "applied" ? "secondary" : "ghost"} size="sm" onClick={() => setFilter("applied")} className="rounded-full">Applied</Button>
-        <Button variant={filter === "missed" ? "secondary" : "ghost"} size="sm" onClick={() => setFilter("missed")} className="rounded-full">Missed</Button>
-      </div>
-
+      {/* Content */}
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className="glass-card p-6 rounded-2xl h-48">
-              <Skeleton className="h-6 w-3/4 mb-4" />
-              <Skeleton className="h-4 w-1/2 mb-6" />
-              <Skeleton className="h-2 w-full mb-2" />
-              <Skeleton className="h-10 w-full mt-auto" />
+          {[1,2,3,4].map(i => (
+            <div key={i} className="neu-card p-6 h-52 space-y-4">
+              <div className="h-5 w-3/4 rounded shimmer-bg" />
+              <div className="h-3.5 w-1/2 rounded shimmer-bg" />
+              <div className="h-2 w-full rounded-full shimmer-bg mt-4" />
+              <div className="h-9 w-full rounded-xl shimmer-bg mt-2" />
             </div>
           ))}
         </div>
       ) : filteredOpps.length === 0 ? (
-        <div className="glass-card border-white/5 rounded-3xl p-12 flex flex-col items-center justify-center text-center space-y-6">
-          <div className="w-24 h-24 rounded-full bg-cyan-400/10 flex items-center justify-center">
-            <Target className="w-12 h-12 text-cyan-400 opacity-50" />
+        <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}
+          className="neu-card p-16 flex flex-col items-center text-center">
+          <div className="w-20 h-20 rounded-2xl bg-cyan-500/8 border border-cyan-500/15 flex items-center justify-center mb-6">
+            <Target className="w-10 h-10 text-cyan-400/40" />
           </div>
-          <div className="max-w-md">
-            <h3 className="text-2xl font-display font-bold mb-2">No targets found</h3>
-            <p className="text-muted-foreground mb-6">Your radar hasn't picked up any opportunities matching this filter. Deploy the agent to find new ones.</p>
-            <Button onClick={() => setIsDialogOpen(true)} className="bg-cyan-500 hover:bg-cyan-600 text-black font-display px-8">
-              Deploy Agent
-            </Button>
-          </div>
-        </div>
+          <h3 className="font-display text-xl font-bold text-white mb-2">No targets acquired</h3>
+          <p className="text-white/35 text-sm max-w-sm mb-7">
+            Your radar hasn't found opportunities matching this filter. Deploy the agent to scan the market.
+          </p>
+          <Button onClick={() => setIsDialogOpen(true)}
+            className="bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-display text-xs tracking-wider border-0 px-8">
+            Deploy Agent
+          </Button>
+        </motion.div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <AnimatePresence mode="popLayout">
             {filteredOpps.map((opp, i) => (
-              <motion.div
-                key={opp.id}
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
+              <motion.div key={opp.id} layout
+                initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.2, delay: i * 0.05 }}
+                exit={{ opacity: 0, scale: 0.96 }}
+                transition={{ duration: 0.22, delay: i * 0.04 }}
               >
                 <Link href={`/opportunities/${opp.id}`}>
-                  <div className="glass-card p-6 rounded-2xl border-white/5 hover:border-cyan-400/50 hover:shadow-[0_0_30px_rgba(0,255,255,0.1)] transition-all cursor-pointer h-full flex flex-col group">
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h3 className="font-bold text-xl mb-1 group-hover:text-cyan-400 transition-colors">{opp.name}</h3>
-                        <p className="text-muted-foreground flex items-center gap-2">
-                          <Briefcase className="w-4 h-4" /> {opp.type}{opp.deadline ? ` · ${opp.deadline}` : ""}
+                  <div className="neu-card p-5 neu-card-hover cursor-pointer h-full flex flex-col group
+                    hover:border-cyan-500/20 transition-all duration-300">
+
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-white text-base truncate mb-1 group-hover:text-cyan-400 transition-colors">
+                          {opp.name}
+                        </h3>
+                        <p className="text-white/40 text-xs flex items-center gap-1.5">
+                          <Briefcase className="w-3.5 h-3.5" /> {opp.type}
+                          {opp.deadline && <span className="text-white/25">· {opp.deadline}</span>}
                         </p>
                       </div>
-                      <Badge variant="outline" className="bg-background/50 backdrop-blur-sm border-white/10 uppercase tracking-wider text-xs">
+                      <Badge variant="outline"
+                        className={`text-[10px] font-mono tracking-wider uppercase shrink-0 border ${STATUS_STYLES[opp.status] ?? "text-white/40 border-white/10"}`}>
                         {opp.status}
                       </Badge>
                     </div>
 
-                    <div className="mb-6 flex-1">
-                      <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{opp.whyMatch}</p>
-                      
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-xs font-display">
-                          <span className="text-cyan-400">Match Score</span>
-                          <span>{opp.matchScore}%</span>
-                        </div>
-                        <Progress value={opp.matchScore} className="h-1.5 bg-background/50 [&>div]:bg-cyan-400" />
+                    <p className="text-white/40 text-sm leading-relaxed line-clamp-2 mb-4 flex-1">{opp.whyMatch}</p>
+
+                    <div className="space-y-1.5 mb-4">
+                      <div className="flex justify-between text-[11px]">
+                        <span className="text-cyan-400/80 font-display font-semibold tracking-wider">MATCH SCORE</span>
+                        <span className="text-white/60 font-mono">{opp.matchScore}%</span>
+                      </div>
+                      <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }} animate={{ width: `${opp.matchScore}%` }}
+                          transition={{ duration: 0.8, ease: "easeOut", delay: i * 0.05 }}
+                          className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-cyan-300"
+                          style={{ boxShadow: "0 0 8px rgba(34,211,238,0.5)" }}
+                        />
                       </div>
                     </div>
 
-                    <div className="flex justify-between items-center pt-4 border-t border-white/5 mt-auto">
-                      <div className="flex gap-2">
-                        <Badge variant="secondary" className="bg-white/5 text-xs font-mono">{opp.type}</Badge>
-                      </div>
-                      <div className="text-cyan-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all flex items-center text-sm font-display font-bold">
-                        Analyze <ChevronRight className="w-4 h-4 ml-1" />
-                      </div>
+                    <div className="flex items-center justify-between pt-3 border-t border-white/[0.05]">
+                      <Badge variant="secondary" className="bg-white/[0.04] text-white/40 text-[10px] border-white/[0.08]">
+                        {opp.type}
+                      </Badge>
+                      <span className="text-xs text-cyan-400 font-display font-semibold opacity-0 group-hover:opacity-100
+                        transition-all duration-200 flex items-center gap-1">
+                        Analyze <ChevronRight className="w-3.5 h-3.5" />
+                      </span>
                     </div>
                   </div>
                 </Link>

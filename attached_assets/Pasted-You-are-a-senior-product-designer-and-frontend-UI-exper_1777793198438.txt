@@ -1,0 +1,59 @@
+You are a senior product designer and frontend UI expert.
+
+Design a modern, visually stunning, and production-ready UI for an AI-powered web application (AI agent platform). The design should feel like a high-end startup product, combining usability, aesthetics, and smooth interactions.
+
+Follow these design principles and requirements:
+
+🎨 VISUAL STYLE
+
+* Use Neumorphism-inspired soft UI elements with subtle inner and outer shadows
+* Combine with elevation-based gray tones (not pure black) for depth
+* Maintain a clean and modern dark theme with high readability
+* Use consistent spacing and balanced layouts with proper whitespace (negative space)
+
+🧩 LAYOUT & STRUCTURE
+
+* Build the interface using a Bento Grid layout (modular card-based structure)
+* Organize content into rounded containers/cards for clarity and scannability
+* Ensure strong visual hierarchy (important elements stand out clearly)
+* Follow a structured grid system for alignment and consistency
+
+⚡ INTERACTIONS & MOTION
+
+* Implement Microinteractions for all key actions (hover, click, focus states)
+* Use Motion UI principles for smooth transitions and engaging animations
+* Add subtle Hover States to all interactive elements
+* Include Scroll-triggered animations to progressively reveal content
+* Implement Parallax scrolling for background depth
+
+⏳ LOADING EXPERIENCE
+
+* Use Skeleton Loading screens for content placeholders
+* Add Shimmer effects to enhance perceived performance
+
+🧠 DESIGN SYSTEM
+
+* Follow a consistent Design System across the UI
+* Use a reusable Component Library approach (buttons, cards, inputs, modals)
+* Maintain consistency in colors, spacing, typography, and components
+
+📱 RESPONSIVENESS & ACCESSIBILITY
+
+* Ensure fully Responsive Design across mobile, tablet, and desktop
+* Follow Accessibility (a11y) best practices (contrast, readable text, focus states)
+
+🔤 TYPOGRAPHY
+
+* Use a clear Typography Scale with strong hierarchy (headings, subheadings, body text)
+* Prioritize readability with modern sans-serif fonts
+
+🎯 GOAL
+
+* The final UI should feel premium, interactive, and futuristic
+* It should look like a real SaaS AI product, not a basic student project
+* Focus on clarity, usability, and delight through motion and design
+
+Output:
+
+* Provide a complete UI layout description and component structure
+* Optionally include Tailwind CSS / React component suggestions if applicable

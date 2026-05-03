@@ -6,24 +6,28 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { Video, Play, Clock, Target, Star } from "lucide-react";
+import { Video, Play, Clock, Target, Star, Loader2, Bot } from "lucide-react";
 import { toast } from "sonner";
+
+const DIFFICULTY_COLORS: Record<string, string> = {
+  easy:   "text-emerald-400 border-emerald-400/25 bg-emerald-400/8",
+  medium: "text-amber-400 border-amber-400/25 bg-amber-400/8",
+  hard:   "text-rose-400 border-rose-400/25 bg-rose-400/8",
+};
 
 export default function InterviewListPage() {
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
   const { data: interviews, isLoading } = useListInterviews();
   const startInterview = useStartInterview();
-  
-  const [role, setRole] = useState("");
+
+  const [role, setRole]           = useState("");
   const [difficulty, setDifficulty] = useState("medium");
 
   const handleStart = (e: React.FormEvent) => {
     e.preventDefault();
     if (!role.trim()) return;
-
     startInterview.mutate(
       { data: { role, difficulty } },
       {
@@ -32,123 +36,140 @@ export default function InterviewListPage() {
           toast.success("Simulation initialized");
           setLocation(`/interview/${session.id}`);
         },
-        onError: () => {
-          toast.error("Failed to start simulation");
-        }
+        onError: () => toast.error("Failed to start simulation"),
       }
     );
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-5xl space-y-10">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-        <div>
-          <h1 className="text-3xl font-display font-bold flex items-center gap-3">
-            <Video className="text-fuchsia-400 w-8 h-8" /> AI Interviewer
-          </h1>
-          <p className="text-muted-foreground mt-1">High-pressure simulation environments to prep for the real thing.</p>
-        </div>
-      </div>
+    <div className="container mx-auto px-4 py-8 max-w-5xl space-y-6">
 
-      <div className="grid lg:grid-cols-3 gap-8">
-        
+      {/* Header */}
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+        className="neu-card p-5 flex items-center gap-3 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-fuchsia-500/4 to-transparent pointer-events-none" />
+        <div className="w-10 h-10 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/20 flex items-center justify-center">
+          <Video className="w-5 h-5 text-fuchsia-400" />
+        </div>
+        <div>
+          <h1 className="font-display font-bold text-lg text-white">AI Interviewer</h1>
+          <p className="text-white/40 text-xs mt-0.5">High-pressure simulation environments</p>
+        </div>
+      </motion.div>
+
+      <div className="grid lg:grid-cols-3 gap-5">
+
         {/* Setup Form */}
-        <div className="lg:col-span-1">
-          <div className="glass-card p-6 rounded-2xl border-fuchsia-500/20 bg-fuchsia-500/5 relative overflow-hidden sticky top-24">
-            <div className="absolute -left-10 -bottom-10 w-32 h-32 bg-fuchsia-500/20 blur-3xl rounded-full pointer-events-none" />
-            <h2 className="font-display font-bold text-xl mb-6 relative z-10">New Simulation</h2>
-            
-            <form onSubmit={handleStart} className="space-y-5 relative z-10">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-fuchsia-200">Target Role</label>
-                <Input 
-                  value={role}
-                  onChange={e => setRole(e.target.value)}
-                  placeholder="e.g. Senior Backend Engineer" 
-                  className="bg-background/80 border-white/10 focus-visible:ring-fuchsia-400"
-                />
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}
+          className="lg:col-span-1">
+          <div className="neu-card p-6 sticky top-6 relative overflow-hidden">
+            <div className="absolute -left-8 -bottom-8 w-28 h-28 bg-fuchsia-500/12 blur-3xl rounded-full pointer-events-none" />
+            <h2 className="font-display font-bold text-sm text-white mb-5 relative z-10 tracking-wider uppercase">New Simulation</h2>
+
+            <form onSubmit={handleStart} className="space-y-4 relative z-10">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-fuchsia-300/70 uppercase tracking-wider">Target Role</label>
+                <Input value={role} onChange={e => setRole(e.target.value)}
+                  placeholder="e.g. Senior Backend Engineer"
+                  className="bg-black/30 border-white/[0.08] focus-visible:ring-fuchsia-400/40 text-white placeholder:text-white/20 text-sm h-11 rounded-xl" />
               </div>
-              
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-fuchsia-200">Difficulty Level</label>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-fuchsia-300/70 uppercase tracking-wider">Difficulty</label>
                 <Select value={difficulty} onValueChange={setDifficulty}>
-                  <SelectTrigger className="bg-background/80 border-white/10">
+                  <SelectTrigger className="bg-black/30 border-white/[0.08] text-white h-11 rounded-xl text-sm">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="easy">Easy (Conversational)</SelectItem>
-                    <SelectItem value="medium">Medium (Technical Deep Dive)</SelectItem>
-                    <SelectItem value="hard">Hard (Stress Test)</SelectItem>
+                  <SelectContent className="bg-[#0c1020] border-white/[0.08]">
+                    <SelectItem value="easy">Easy — Conversational</SelectItem>
+                    <SelectItem value="medium">Medium — Technical Deep Dive</SelectItem>
+                    <SelectItem value="hard">Hard — Stress Test</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              
-              <Button 
-                type="submit" 
-                disabled={startInterview.isPending || !role.trim()} 
-                className="w-full font-display bg-fuchsia-500 hover:bg-fuchsia-600 text-white mt-6 h-12 shadow-[0_0_20px_rgba(217,70,239,0.3)]"
-              >
-                {startInterview.isPending ? "Initializing..." : <><Play className="w-4 h-4 mr-2" /> Start Session</>}
+
+              <Button type="submit" disabled={startInterview.isPending || !role.trim()}
+                className="w-full h-12 mt-2 font-display text-xs tracking-wider rounded-xl
+                  bg-gradient-to-r from-fuchsia-500 to-fuchsia-600 hover:from-fuchsia-400 hover:to-fuchsia-500
+                  text-white border-0 shadow-[0_0_24px_rgba(232,121,249,0.35)]
+                  hover:shadow-[0_0_36px_rgba(232,121,249,0.45)]">
+                {startInterview.isPending
+                  ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Initializing...</>
+                  : <><Play className="w-4 h-4 mr-2" /> Start Session</>}
               </Button>
             </form>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Sessions List */}
-        <div className="lg:col-span-2 space-y-6">
-          <h2 className="font-display text-xl font-bold border-b border-white/5 pb-4">Simulation Logs</h2>
-          
+        {/* Sessions */}
+        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}
+          className="lg:col-span-2 space-y-4">
+          <div className="flex items-center justify-between border-b border-white/[0.06] pb-4">
+            <h2 className="font-display text-sm font-bold text-white tracking-wider uppercase">Simulation Logs</h2>
+            {interviews && interviews.length > 0 && (
+              <span className="text-xs text-white/25 font-mono">{interviews.length} session{interviews.length !== 1 ? "s" : ""}</span>
+            )}
+          </div>
+
           {isLoading ? (
             <div className="grid sm:grid-cols-2 gap-4">
-              {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-32 w-full rounded-2xl" />)}
+              {[1,2,3,4].map(i => <div key={i} className="h-36 rounded-2xl shimmer-bg" />)}
             </div>
           ) : interviews?.length === 0 ? (
-            <div className="text-center py-16 text-muted-foreground border border-white/5 border-dashed rounded-2xl bg-white/5">
-              <Video className="w-12 h-12 mx-auto opacity-20 mb-4" />
-              <p>No interview simulations run yet.</p>
+            <div className="neu-card p-16 flex flex-col items-center text-center">
+              <div className="w-16 h-16 rounded-2xl bg-fuchsia-500/8 border border-fuchsia-500/15 flex items-center justify-center mb-4">
+                <Video className="w-8 h-8 text-fuchsia-400/40" />
+              </div>
+              <p className="text-white/30 text-sm">No simulations yet.</p>
+              <p className="text-white/20 text-xs mt-1">Configure a role and hit Start.</p>
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 gap-4">
               {interviews?.map((session, i) => (
-                <motion.div
-                  key={session.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
+                <motion.div key={session.id}
+                  initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
                   onClick={() => setLocation(`/interview/${session.id}`)}
-                  className="glass-card p-5 rounded-2xl border-white/5 hover:border-fuchsia-500/40 hover:shadow-[0_0_20px_rgba(217,70,239,0.1)] transition-all cursor-pointer flex flex-col h-full group"
+                  className="neu-card p-5 cursor-pointer flex flex-col h-full group
+                    hover:border-fuchsia-500/25 transition-all duration-300
+                    hover:shadow-[0_0_24px_rgba(232,121,249,0.12)]"
                 >
-                  <div className="flex justify-between items-start mb-4">
-                    <Badge variant="outline" className={
-                      session.status === 'active' 
-                        ? 'text-fuchsia-400 border-fuchsia-400/30 bg-fuchsia-400/10 animate-pulse'
-                        : 'text-muted-foreground border-white/10 bg-white/5'
-                    }>
-                      {session.status.toUpperCase()}
+                  <div className="flex items-start justify-between mb-3">
+                    <Badge variant="outline" className={`text-[10px] font-mono uppercase tracking-wider border ${
+                      session.status === "active"
+                        ? "text-fuchsia-400 border-fuchsia-400/30 bg-fuchsia-400/8 animate-pulse"
+                        : "text-white/35 border-white/10 bg-white/[0.03]"
+                    }`}>
+                      {session.status}
                     </Badge>
-                    <Badge variant="secondary" className="bg-white/5 capitalize text-[10px]">{session.difficulty}</Badge>
-                  </div>
-                  
-                  <div className="flex-1">
-                    <h3 className="font-display font-bold text-lg leading-tight mb-1 group-hover:text-fuchsia-300 transition-colors">{session.role}</h3>
-                    <p className="text-xs text-muted-foreground flex items-center gap-1.5">
-                      <Clock className="w-3 h-3" /> {new Date(session.createdAt).toLocaleDateString()}
-                    </p>
-                    {typeof session.overallScore === "number" && (
-                      <p className="text-xs text-amber-300 flex items-center gap-1.5 mt-2 font-display">
-                        <Star className="w-3 h-3 fill-amber-300" /> Rating {session.overallScore}/10
-                      </p>
-                    )}
+                    <Badge variant="outline" className={`text-[10px] capitalize border ${DIFFICULTY_COLORS[session.difficulty] ?? ""}`}>
+                      {session.difficulty}
+                    </Badge>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-white/5 text-xs text-fuchsia-400/70 font-display font-bold flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-                    Enter Log <Target className="w-3 h-3 ml-1" />
+                  <h3 className="font-display font-bold text-sm text-white group-hover:text-fuchsia-300 transition-colors mb-1 leading-snug flex-1">
+                    {session.role}
+                  </h3>
+
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/[0.05]">
+                    <p className="text-[11px] text-white/30 flex items-center gap-1">
+                      <Clock className="w-3 h-3" /> {new Date(session.createdAt).toLocaleDateString()}
+                    </p>
+                    {typeof session.overallScore === "number" ? (
+                      <p className="text-xs text-amber-300 font-display font-bold flex items-center gap-1">
+                        <Star className="w-3.5 h-3.5 fill-amber-300" /> {session.overallScore}/10
+                      </p>
+                    ) : (
+                      <p className="text-[10px] text-fuchsia-400/0 group-hover:text-fuchsia-400/70 font-display font-bold
+                        transition-all duration-200 flex items-center gap-1">
+                        Enter Log <Target className="w-3 h-3" />
+                      </p>
+                    )}
                   </div>
                 </motion.div>
               ))}
             </div>
           )}
-        </div>
+        </motion.div>
       </div>
     </div>
   );
