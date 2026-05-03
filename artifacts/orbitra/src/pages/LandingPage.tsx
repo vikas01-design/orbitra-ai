@@ -25,12 +25,12 @@ const FEATURES = [
 ];
 
 const COLOR_MAP: Record<string, { bg: string; text: string; border: string; glow: string }> = {
-  cyan:    { bg: "bg-cyan-500/10",    text: "text-cyan-400",    border: "border-cyan-500/20",    glow: "hover:shadow-[0_0_28px_rgba(34,211,238,0.18)]" },
-  blue:    { bg: "bg-blue-500/10",    text: "text-blue-400",    border: "border-blue-500/20",    glow: "hover:shadow-[0_0_28px_rgba(96,165,250,0.18)]" },
-  violet:  { bg: "bg-violet-500/10",  text: "text-violet-400",  border: "border-violet-500/20",  glow: "hover:shadow-[0_0_28px_rgba(167,139,250,0.18)]" },
-  fuchsia: { bg: "bg-fuchsia-500/10", text: "text-fuchsia-400", border: "border-fuchsia-500/20", glow: "hover:shadow-[0_0_28px_rgba(232,121,249,0.18)]" },
-  pink:    { bg: "bg-pink-500/10",    text: "text-pink-400",    border: "border-pink-500/20",    glow: "hover:shadow-[0_0_28px_rgba(244,114,182,0.18)]" },
-  amber:   { bg: "bg-amber-500/10",   text: "text-amber-400",   border: "border-amber-500/20",   glow: "hover:shadow-[0_0_28px_rgba(245,158,11,0.18)]" },
+  cyan:    { bg: "bg-cyan-500/8",    text: "text-cyan-600",    border: "border-cyan-200",    glow: "hover:shadow-[0_4px_16px_rgba(34,211,238,0.08)]" },
+  blue:    { bg: "bg-blue-500/8",    text: "text-blue-600",    border: "border-blue-200",    glow: "hover:shadow-[0_4px_16px_rgba(96,165,250,0.08)]" },
+  violet:  { bg: "bg-violet-500/8",  text: "text-violet-600",  border: "border-violet-200",  glow: "hover:shadow-[0_4px_16px_rgba(167,139,250,0.08)]" },
+  fuchsia: { bg: "bg-fuchsia-500/8", text: "text-fuchsia-600", border: "border-fuchsia-200", glow: "hover:shadow-[0_4px_16px_rgba(232,121,249,0.08)]" },
+  pink:    { bg: "bg-pink-500/8",    text: "text-pink-600",    border: "border-pink-200",    glow: "hover:shadow-[0_4px_16px_rgba(244,114,182,0.08)]" },
+  amber:   { bg: "bg-amber-500/8",   text: "text-amber-600",   border: "border-amber-200",   glow: "hover:shadow-[0_4px_16px_rgba(245,158,11,0.08)]" },
 };
 
 export default function LandingPage() {
