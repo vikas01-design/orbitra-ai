@@ -215,6 +215,76 @@ export type InterviewSummaryResult = {
   summary: string;
 };
 
+export type ResumeJobMatch = {
+  title: string;
+  companyType: string;
+  matchReason: string;
+  skillsNeeded: string[];
+  level: string;
+};
+
+export async function runResumeEnhancerAgent(originalText: string): Promise<string> {
+  const system = `You are a professional resume writer and ATS optimization expert inside Orbitra AI.
+
+Your task is to enhance the provided resume to be concise, professional, and optimized for Applicant Tracking Systems (ATS).
+
+RULES:
+- Keep length between 1-2 pages worth of content.
+- Use clean, professional, text-based markdown format (no graphics, no tables, no HTML).
+- Use bullet points and clear section headings (##).
+- Focus on achievements, not responsibilities.
+- Use strong action verbs (Developed, Led, Improved, Built, Designed, Launched, etc).
+- Prioritize measurable achievements (numbers, percentages, impact).
+- Avoid generic statements.
+- Strictly avoid: photos, personal details like age/marital status/full address, complex formatting, irrelevant info.
+
+MANDATORY STRUCTURE (in order):
+## [Full Name]
+[Phone] | [Email] | [LinkedIn if present]
+
+## Professional Summary
+2-3 impactful sentences summarizing value, experience, and specialization.
+
+## Work Experience
+Reverse-chronological. For each role: Job Title | Company | Dates
+- Action Verb + Task/Project + Quantifiable Result
+
+## Skills
+Hard skills and soft skills, comma-separated or grouped.
+
+## Education
+Degree | University | Year
+
+## Projects / Certifications / Volunteer (only if present in original)
+
+OUTPUT: Return ONLY the enhanced resume in clean markdown. No commentary, no preamble, no explanation — just the resume content.`;
+
+  const resp = await openai.chat.completions.create({
+    model: MODEL,
+    max_completion_tokens: 4096,
+    messages: [
+      { role: "system", content: system },
+      { role: "user", content: `Here is the original resume to enhance:\n\n${originalText}` },
+    ],
+  });
+  return (resp.choices[0]?.message?.content ?? "").trim();
+}
+
+export async function runResumeJobMatchAgent(enhancedResume: string): Promise<ResumeJobMatch[]> {
+  const system = `You are a career advisor inside Orbitra AI.
+Based on the candidate's resume, identify 5-7 specific job opportunity paths that are a strong match.
+For each path be realistic and specific to the candidate's actual skills and experience level.
+Return STRICT JSON: { "jobs": [{ "title": str, "companyType": str, "matchReason": str (1-2 sentences), "skillsNeeded": [str], "level": "Entry"|"Mid"|"Senior"|"Lead" }] }`;
+  const out = await chatJSON<{ jobs: ResumeJobMatch[] }>(system, `Resume:\n\n${enhancedResume}`);
+  return (out.jobs ?? []).slice(0, 7).map((j) => ({
+    title: String(j.title ?? ""),
+    companyType: String(j.companyType ?? ""),
+    matchReason: String(j.matchReason ?? ""),
+    skillsNeeded: Array.isArray(j.skillsNeeded) ? j.skillsNeeded.map(String) : [],
+    level: String(j.level ?? "Mid"),
+  }));
+}
+
 export async function summarizeInterview(input: {
   role: string;
   difficulty: string;

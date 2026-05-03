@@ -91,6 +91,30 @@ export interface Application {
   createdAt: string;
 }
 
+export interface ResumeJobMatch {
+  title: string;
+  companyType: string;
+  matchReason: string;
+  skillsNeeded: string[];
+  level: string;
+}
+
+export interface Resume {
+  id: number;
+  userId: string;
+  fileName: string;
+  originalText: string;
+  enhancedResume: string;
+  /** @nullable */
+  editedResume?: string | null;
+  jobMatches: ResumeJobMatch[];
+  createdAt: string;
+}
+
+export interface UpdateResumeBody {
+  editedResume: string;
+}
+
 export interface GenerateApplicationBody {
   /** @nullable */
   opportunityId?: number | null;

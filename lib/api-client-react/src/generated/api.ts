@@ -27,12 +27,14 @@ import type {
   Opportunity,
   Profile,
   RecoveryAlternative,
+  Resume,
   RunRadarBody,
   RunRecoveryBody,
   RunSkillGapBody,
   SkillGap,
   StartInterviewBody,
   UpdateProfileBody,
+  UpdateResumeBody,
 } from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
@@ -929,6 +931,231 @@ export const useGenerateApplication = <
   TContext
 > => {
   return useMutation(getGenerateApplicationMutationOptions(options));
+};
+
+export const getListResumesUrl = () => {
+  return `/api/resume`;
+};
+
+export const listResumes = async (options?: RequestInit): Promise<Resume[]> => {
+  return customFetch<Resume[]>(getListResumesUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getListResumesQueryKey = () => {
+  return [`/api/resume`] as const;
+};
+
+export const getListResumesQueryOptions = <
+  TData = Awaited<ReturnType<typeof listResumes>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listResumes>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getListResumesQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof listResumes>>> = ({
+    signal,
+  }) => listResumes({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof listResumes>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ListResumesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof listResumes>>
+>;
+export type ListResumesQueryError = ErrorType<unknown>;
+
+export function useListResumes<
+  TData = Awaited<ReturnType<typeof listResumes>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof listResumes>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getListResumesQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+export const getUpdateResumeUrl = (id: number) => {
+  return `/api/resume/${id}`;
+};
+
+export const updateResume = async (
+  id: number,
+  updateResumeBody: UpdateResumeBody,
+  options?: RequestInit,
+): Promise<Resume> => {
+  return customFetch<Resume>(getUpdateResumeUrl(id), {
+    ...options,
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(updateResumeBody),
+  });
+};
+
+export const getUpdateResumeMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateResume>>,
+    TError,
+    { id: number; data: BodyType<UpdateResumeBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateResume>>,
+  TError,
+  { id: number; data: BodyType<UpdateResumeBody> },
+  TContext
+> => {
+  const mutationKey = ["updateResume"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateResume>>,
+    { id: number; data: BodyType<UpdateResumeBody> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateResume(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateResumeMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateResume>>
+>;
+export type UpdateResumeMutationBody = BodyType<UpdateResumeBody>;
+export type UpdateResumeMutationError = ErrorType<unknown>;
+
+export const useUpdateResume = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateResume>>,
+    TError,
+    { id: number; data: BodyType<UpdateResumeBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateResume>>,
+  TError,
+  { id: number; data: BodyType<UpdateResumeBody> },
+  TContext
+> => {
+  return useMutation(getUpdateResumeMutationOptions(options));
+};
+
+export const getMatchResumeJobsUrl = (id: number) => {
+  return `/api/resume/${id}/jobs`;
+};
+
+export const matchResumeJobs = async (
+  id: number,
+  options?: RequestInit,
+): Promise<Resume> => {
+  return customFetch<Resume>(getMatchResumeJobsUrl(id), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getMatchResumeJobsMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof matchResumeJobs>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof matchResumeJobs>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationKey = ["matchResumeJobs"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof matchResumeJobs>>,
+    { id: number }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return matchResumeJobs(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type MatchResumeJobsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof matchResumeJobs>>
+>;
+
+export type MatchResumeJobsMutationError = ErrorType<unknown>;
+
+export const useMatchResumeJobs = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof matchResumeJobs>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof matchResumeJobs>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  return useMutation(getMatchResumeJobsMutationOptions(options));
 };
 
 export const getRunRecoveryUrl = () => {

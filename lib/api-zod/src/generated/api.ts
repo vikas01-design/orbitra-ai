@@ -196,6 +196,76 @@ export const GenerateApplicationResponse = zod.object({
   createdAt: zod.string(),
 });
 
+export const ListResumesResponseItem = zod.object({
+  id: zod.number(),
+  userId: zod.string(),
+  fileName: zod.string(),
+  originalText: zod.string(),
+  enhancedResume: zod.string(),
+  editedResume: zod.string().nullish(),
+  jobMatches: zod.array(
+    zod.object({
+      title: zod.string(),
+      companyType: zod.string(),
+      matchReason: zod.string(),
+      skillsNeeded: zod.array(zod.string()),
+      level: zod.string(),
+    }),
+  ),
+  createdAt: zod.string(),
+});
+export const ListResumesResponse = zod.array(ListResumesResponseItem);
+
+export const UpdateResumeParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateResumeBody = zod.object({
+  editedResume: zod.string(),
+});
+
+export const UpdateResumeResponse = zod.object({
+  id: zod.number(),
+  userId: zod.string(),
+  fileName: zod.string(),
+  originalText: zod.string(),
+  enhancedResume: zod.string(),
+  editedResume: zod.string().nullish(),
+  jobMatches: zod.array(
+    zod.object({
+      title: zod.string(),
+      companyType: zod.string(),
+      matchReason: zod.string(),
+      skillsNeeded: zod.array(zod.string()),
+      level: zod.string(),
+    }),
+  ),
+  createdAt: zod.string(),
+});
+
+export const MatchResumeJobsParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const MatchResumeJobsResponse = zod.object({
+  id: zod.number(),
+  userId: zod.string(),
+  fileName: zod.string(),
+  originalText: zod.string(),
+  enhancedResume: zod.string(),
+  editedResume: zod.string().nullish(),
+  jobMatches: zod.array(
+    zod.object({
+      title: zod.string(),
+      companyType: zod.string(),
+      matchReason: zod.string(),
+      skillsNeeded: zod.array(zod.string()),
+      level: zod.string(),
+    }),
+  ),
+  createdAt: zod.string(),
+});
+
 export const RunRecoveryBody = zod.object({
   missedOpportunity: zod.string(),
 });

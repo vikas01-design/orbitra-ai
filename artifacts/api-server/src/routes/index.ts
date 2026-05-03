@@ -7,6 +7,7 @@ import applicationsRouter from "./applications";
 import recoveryRouter from "./recovery";
 import interviewsRouter from "./interviews";
 import dashboardRouter from "./dashboard";
+import resumeRouter from "./resume";
 
 const router: IRouter = Router();
 
@@ -18,5 +19,6 @@ router.use(applicationsRouter);
 router.use(recoveryRouter);
 router.use(interviewsRouter);
 router.use(dashboardRouter);
+router.use(resumeRouter);
 
 export default router;

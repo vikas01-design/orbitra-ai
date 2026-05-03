@@ -177,6 +177,56 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/Application" }
 
+  /resume:
+    get:
+      operationId: listResumes
+      tags: [applications]
+      responses:
+        "200":
+          description: List of resumes
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Resume" }
+
+  /resume/{id}:
+    patch:
+      operationId: updateResume
+      tags: [applications]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UpdateResumeBody" }
+      responses:
+        "200":
+          description: Updated resume
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Resume" }
+
+  /resume/{id}/jobs:
+    post:
+      operationId: matchResumeJobs
+      tags: [applications]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Job matches
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Resume" }
+
   /recovery:
     post:
       operationId: runRecovery
@@ -368,6 +418,39 @@ components:
           items: { type: string }
         createdAt: { type: string }
       required: [id, userId, opportunityName, tone, message, strengths, resumeSuggestions, createdAt]
+
+    Resume:
+      type: object
+      properties:
+        id: { type: integer }
+        userId: { type: string }
+        fileName: { type: string }
+        originalText: { type: string }
+        enhancedResume: { type: string }
+        editedResume: { type: ["string", "null"] }
+        jobMatches:
+          type: array
+          items: { $ref: "#/components/schemas/ResumeJobMatch" }
+        createdAt: { type: string }
+      required: [id, userId, fileName, originalText, enhancedResume, jobMatches, createdAt]
+
+    ResumeJobMatch:
+      type: object
+      properties:
+        title: { type: string }
+        companyType: { type: string }
+        matchReason: { type: string }
+        skillsNeeded:
+          type: array
+          items: { type: string }
+        level: { type: string }
+      required: [title, companyType, matchReason, skillsNeeded, level]
+
+    UpdateResumeBody:
+      type: object
+      properties:
+        editedResume: { type: string }
+      required: [editedResume]
 
     GenerateApplicationBody:
       type: object
