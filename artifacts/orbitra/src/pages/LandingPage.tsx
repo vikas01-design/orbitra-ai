@@ -84,47 +84,96 @@ export default function LandingPage() {
         }}
       />
 
-      {/* ── Header ─────────────────────────────────────────── */}
-      <motion.header
-        initial={{ y: -24, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.7 }}
-        className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between"
-        style={{
-          background: "rgba(238,240,251,0.82)",
-          backdropFilter: "blur(24px)",
-          borderBottom: "1px solid rgba(160,180,240,0.25)",
-          boxShadow: "0 1px 24px rgba(140,160,220,0.18)",
-        }}
-      >
-        <div className="flex items-center gap-2.5">
-          <img src={`${basePath}/logo.svg`} alt="Logo" className="w-8 h-8 drop-shadow-[0_0_12px_rgba(34,211,238,0.7)]" />
-          <span className="font-display font-bold text-lg tracking-widest text-slate-800">ORBITRA</span>
-          <span className="ml-1 w-1.5 h-1.5 rounded-full bg-cyan-500 animate-blink-dot" />
-        </div>
-        <div className="flex items-center gap-3">
-          <SignedIn>
-            <button onClick={() => handleLaunch("/dashboard")}
-              className="px-4 py-2 rounded-xl text-sm font-display font-semibold tracking-wider
-                text-slate-600 hover:text-cyan-600 transition-colors">
-              Dashboard →
-            </button>
-          </SignedIn>
-          <SignedOut>
-            <Link href="/sign-in">
-              <button className="px-4 py-2 rounded-xl text-sm text-slate-500 hover:text-slate-800 transition-colors font-medium">
-                Log In
+      {/* ── Header — Floating Pill Nav ──────────────────────── */}
+      <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-5 px-4 pointer-events-none">
+        <motion.header
+          initial={{ y: -32, opacity: 0, scale: 0.95 }}
+          animate={{ y: 0, opacity: 1, scale: 1 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="pointer-events-auto flex items-center gap-1 px-2 py-2 rounded-2xl relative"
+          style={{
+            background: "rgba(240,242,252,0.78)",
+            backdropFilter: "blur(28px)",
+            boxShadow: "0 8px 40px rgba(120,140,220,0.18), 0 1px 0 rgba(255,255,255,0.8) inset",
+            border: "1px solid rgba(180,195,245,0.5)",
+          }}
+        >
+          {/* Subtle gradient border accent */}
+          <div className="absolute inset-0 rounded-2xl pointer-events-none"
+            style={{
+              background: "linear-gradient(135deg, rgba(34,211,238,0.12) 0%, rgba(139,92,246,0.06) 50%, rgba(34,211,238,0.04) 100%)",
+            }}
+          />
+
+          {/* Logo */}
+          <Link href="/" className="relative flex items-center gap-2 px-3 py-1.5 rounded-xl
+            hover:bg-white/60 transition-all duration-200 group">
+            <img src={`${basePath}/logo.svg`} alt="Logo" className="w-7 h-7 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
+            <span className="font-display font-bold text-sm tracking-widest text-slate-800">ORBITRA</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-blink-dot" />
+          </Link>
+
+          {/* Divider */}
+          <div className="w-px h-5 bg-slate-200/80 mx-1 relative z-10" />
+
+          {/* Nav links */}
+          <nav className="relative flex items-center gap-0.5">
+            {[
+              { label: "Agents", anchor: "agents" },
+              { label: "Workflow", anchor: "workflow" },
+            ].map(({ label, anchor }) => (
+              <button
+                key={anchor}
+                onClick={() => document.getElementById(anchor)?.scrollIntoView({ behavior: "smooth" })}
+                className="px-3.5 py-1.5 rounded-xl text-xs font-semibold tracking-wide text-slate-500
+                  hover:text-slate-800 hover:bg-white/70 transition-all duration-200"
+              >
+                {label}
               </button>
-            </Link>
-            <Link href="/sign-up">
-              <button className="px-5 py-2.5 rounded-xl text-sm font-display font-semibold tracking-wider text-white
-                bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500
-                shadow-[0_4px_20px_rgba(6,182,212,0.38)] hover:shadow-[0_4px_28px_rgba(6,182,212,0.5)]
-                transition-all duration-300">
-                Get Started
-              </button>
-            </Link>
-          </SignedOut>
-        </div>
-      </motion.header>
+            ))}
+          </nav>
+
+          {/* Divider */}
+          <div className="w-px h-5 bg-slate-200/80 mx-1 relative z-10" />
+
+          {/* Auth actions */}
+          <div className="relative flex items-center gap-1.5 pl-1">
+            <SignedIn>
+              <motion.button
+                whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                onClick={() => handleLaunch("/dashboard")}
+                className="px-4 py-1.5 rounded-xl text-xs font-display font-bold tracking-wider text-white
+                  bg-gradient-to-r from-cyan-500 to-violet-600
+                  shadow-[0_2px_16px_rgba(34,211,238,0.35)]
+                  hover:shadow-[0_4px_24px_rgba(34,211,238,0.5)]
+                  transition-all duration-300"
+              >
+                Dashboard →
+              </motion.button>
+            </SignedIn>
+            <SignedOut>
+              <Link href="/sign-in">
+                <button className="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-500
+                  hover:text-slate-800 hover:bg-white/70 transition-all duration-200">
+                  Log In
+                </button>
+              </Link>
+              <Link href="/sign-up">
+                <motion.button
+                  whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
+                  className="px-4 py-1.5 rounded-xl text-xs font-display font-bold tracking-wider text-white
+                    bg-gradient-to-r from-cyan-500 to-violet-600
+                    shadow-[0_2px_16px_rgba(34,211,238,0.35)]
+                    hover:shadow-[0_4px_24px_rgba(34,211,238,0.5)]
+                    transition-all duration-300"
+                >
+                  Get Started
+                </motion.button>
+              </Link>
+            </SignedOut>
+          </div>
+        </motion.header>
+      </div>
 
       {/* ── Hero ───────────────────────────────────────────── */}
       <section ref={heroRef}
